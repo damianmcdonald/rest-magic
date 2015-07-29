@@ -50,6 +50,7 @@ libraryDependencies ++= {
     "ch.qos.logback"              %     "logback-classic"       % "1.1.2",
     "org.scalaz.stream"           %%    "scalaz-stream"         % "0.7a",
     "net.liftweb"                 %     "lift-json_2.11"        % "2.6.2",
+    "org.reflections"             %     "reflections"           % "0.9.9-RC1",
 
     /* Testing */
     "com.typesafe.akka"           %%  "akka-testkit"            % akkaV    % "test"     withSources() withJavadoc,
