@@ -16,37 +16,39 @@
 
 package com.github.damianmcdonald.restmagic.configurators
 
-import com.github.damianmcdonald.restmagic.configurators.DataMode.DataModeType
-import com.github.damianmcdonald.restmagic.configurators.ParameterizedHttpErrorConfig._
+import com.github.damianmcdonald.restmagic.configurators.FormMode.{ ByQueryString, FormModeType }
 import com.github.damianmcdonald.restmagic.configurators.ServeMode.ServeModeType
 import com.github.damianmcdonald.restmagic.configurators.utils.ConfiguratorUtils
+import spray.http.HttpMethod
 import spray.routing._
-import spray.http.{ HttpMethod, MediaType, StatusCode }
-import shapeless.HList
 
-object ParameterizedRestErrorConfig extends ConfiguratorUtils {
+object ParameterizedHttpErrorConfig extends ConfiguratorUtils {
 
   def apply(
     httpMethod: HttpMethod,
-    apiPath: PathMatcher1[String],
+    apiPath: PathMatcher0,
     responseData: Map[String, ErrorCode],
-    serveMode: ServeModeType
-  ): ParameterizedRestErrorConfig = {
+    paramName: String,
+    serveMode: ServeModeType,
+    formMode: FormModeType
+  ): ParameterizedHttpErrorConfig = {
     assert(responseData.nonEmpty, ERROR_EMPTY_MAP)
     assert(if (responseData.size == 1 && !serveMode.isInstanceOf[ServeMode.Singular]) false else true, ERROR_SINGULAR_MODE)
     assert(if (responseData.size > 1 && serveMode.isInstanceOf[ServeMode.Singular]) false else true, ERROR_MULTI_MODE)
     val directive = httpMethodToDirective(httpMethod)
-    new ParameterizedRestErrorConfig(directive, apiPath, responseData, serveMode)
+    new ParameterizedHttpErrorConfig(directive, apiPath, responseData, paramName, serveMode, formMode)
   }
 
   def apply(
     httpMethod: HttpMethod,
-    apiPath: PathMatcher1[String],
+    apiPath: PathMatcher0,
     responseData: Map[String, ErrorCode],
     serveMode: ServeModeType,
+    formMode: FormModeType,
+    paramName: String,
     displayName: String,
     displayUrl: String
-  ): ParameterizedRestErrorConfig = {
+  ): ParameterizedHttpErrorConfig = {
     assert(responseData.nonEmpty, ERROR_EMPTY_MAP)
     assert(if (responseData.size == 1 && !serveMode.isInstanceOf[ServeMode.Singular]) false else true, ERROR_SINGULAR_MODE)
     assert(if (responseData.size > 1 && serveMode.isInstanceOf[ServeMode.Singular]) false else true, ERROR_MULTI_MODE)
@@ -57,28 +59,25 @@ object ParameterizedRestErrorConfig extends ConfiguratorUtils {
           displayName,
           displayUrl,
           httpMethod.toString,
-          "Http errors",
-          dataModeTypeToString(DataMode.Inline()),
+          "",
+          "",
           serveModeTypeToString(ServeMode.Singular()),
-          responseData.map({
-            case (k, v) => {
-              val s = v.errorCode.toString() + " -- " + v.errorMessage
-              (k -> s)
-            }
-          }),
-          API_TYPE_PARAMETERIZED_REST_ERROR
+          responseData.map({ case (k, v) => (k -> v.toString) }),
+          if (formMode.isInstanceOf[ByQueryString]) API_TYPE_PARAMETERIZED_HTTP_ERROR_BY_QUERY_STRING else API_TYPE_PARAMETERIZED_HTTP_ERROR_BY_FORM_DATA,
+          Option(paramName)
         )
       )
     }
-    new ParameterizedRestErrorConfig(directive, apiPath, responseData, serveMode, registeredApi)
+    new ParameterizedHttpErrorConfig(directive, apiPath, responseData, paramName, serveMode, formMode, registeredApi)
   }
-
 }
 
-case class ParameterizedRestErrorConfig(
+case class ParameterizedHttpErrorConfig(
   httpMethod: Directive0,
-  apiPath: PathMatcher1[String],
+  apiPath: PathMatcher0,
   responseData: Map[String, ErrorCode],
+  paramName: String,
   serveMode: ServeModeType,
+  formMode: FormModeType,
   registeredApi: Option[RegisteredApi] = None
 ) extends RootApiConfig

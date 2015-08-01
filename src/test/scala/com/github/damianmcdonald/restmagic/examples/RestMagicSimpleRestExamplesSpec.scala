@@ -4,9 +4,8 @@ import org.specs2.mutable.Specification
 import com.github.damianmcdonald.restmagic.api.RestMagicApi
 import net.liftweb.json._
 import spray.testkit.Specs2RouteTest
-import spray.http.StatusCodes
-import spray.http.HttpEntity
-import spray.http.MediaTypes
+import spray.http._
+import java.io.File
 
 class RestMagicSimpleRestExamplesSpec extends Specification with Specs2RouteTest with RestMagicApi {
 

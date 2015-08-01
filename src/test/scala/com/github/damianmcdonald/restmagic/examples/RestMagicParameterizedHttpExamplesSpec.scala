@@ -71,10 +71,9 @@ class RestMagicParameterizedHttpExamplesSpec extends Specification with Specs2Ro
     }
   }
 
-  /*
-  "The ParameterizedRestErrorService created via RestMagicParameterizedRestExamples" should {
-    "return a 400 Bad Request Error for a GET request to path /" + rootApiPath + "/examples/parameterizedrest/error/1" in {
-      Get("/" + rootApiPath + "/examples/parameterizedrest/error/1") ~> routes ~> check {
+  "The ParameterizedHttpErrorService created via RestMagicParameterizedHttpExamples" should {
+    "return a 400 Bad Request Error for a GET request to path /" + rootApiPath + "/examples/parameterizedhttp/error/querystring/get?errorId=1" in {
+      Get("/" + rootApiPath + "/examples/parameterizedhttp/error/querystring/get?errorId=1") ~> routes ~> check {
         status mustEqual StatusCodes.BadRequest
         val response = responseAs[String]
         response must not be empty
@@ -82,6 +81,17 @@ class RestMagicParameterizedHttpExamplesSpec extends Specification with Specs2Ro
       }
     }
   }
-  */
+
+  "The ParameterizedHttpErrorService created via RestMagicParameterizedHttpExamples" should {
+    "return a 400 Bad Request Error for a POST request to path /" + rootApiPath + "/examples/parameterizedhttp/error/formdata/post" in {
+      val data = Map("errorId" -> "2")
+      Post("/" + rootApiPath + "/examples/parameterizedhttp/error/formdata/post", FormData(data)) ~> routes ~> check {
+        status mustEqual StatusCodes.BandwidthLimitExceeded
+        val response = responseAs[String]
+        response must not be empty
+        response mustEqual "RestMagic BandwidthLimitExceeded error"
+      }
+    }
+  }
 
 }

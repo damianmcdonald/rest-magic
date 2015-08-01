@@ -51,6 +51,8 @@ libraryDependencies ++= {
     "org.scalaz.stream"           %%    "scalaz-stream"         % "0.7a",
     "net.liftweb"                 %     "lift-json_2.11"        % "2.6.2",
     "org.reflections"             %     "reflections"           % "0.9.9-RC1",
+    "org.apache.commons"          %     "commons-lang3"         % "3.4",
+    "commons-io"                  %     "commons-io"            % "2.4",
 
     /* Testing */
     "com.typesafe.akka"           %%  "akka-testkit"            % akkaV    % "test"     withSources() withJavadoc,

@@ -16,6 +16,9 @@
 
 package com.github.damianmcdonald.restmagic.configurators.utils
 
+import java.io.File
+import java.nio.file.{ Paths, Path }
+
 import com.github.damianmcdonald.restmagic.configurators.DataMode.DataModeType
 import com.github.damianmcdonald.restmagic.configurators.DataMode.FileStub
 import com.github.damianmcdonald.restmagic.configurators.DataMode.Inline
@@ -32,8 +35,11 @@ import akka.event.slf4j.SLF4JLogging
 trait ConfiguratorUtils extends SLF4JLogging {
 
   val ERROR_MULTI_MODE = "Singular serve mode can only be used when the responseData Map contains a single entry. Please use Random or ByParam serve modes"
-  val ERROR_EMPTY_MAP = "The responseData map can not be empty. You must provided at least one response entry"
+  val ERROR_EMPTY_MAP = "The responseData map can not be empty. You must provide at least one response entry"
   val ERROR_SINGULAR_MODE = "The selected serve mode can only be used when the responseData Map contains more than one entry. Please add additional responses to the Map or use Singular serve mode"
+  val ERROR_EMPTY_STRING = "responseData can not be empty. You must provide a response entry"
+  val ERROR_EMPTY_FILE_PARAM_NAME = "The fileParamName can not be empty. This value is used identify the file part of a multi part form submission. You must provide a fileParamName"
+  val ERROR_FILE_DOWNLOAD_NOT_EXISTS = "The provided filePath can not be resolved to a valid file."
 
   val API_TYPE_SIMPLE_REST = "Simple Rest"
   val API_TYPE_PARAMETERIZED_REST = "Parameterized Rest"
@@ -41,6 +47,11 @@ trait ConfiguratorUtils extends SLF4JLogging {
   val API_TYPE_PARAMETERIZED_REST_ERROR = "Parameterized Rest Error"
   val API_TYPE_PARAMETERIZED_HTTP_BY_QUERY_STRING = "Parameterized Http By Query String"
   val API_TYPE_PARAMETERIZED_HTTP_BY_FORM_DATA = "Parameterized Http By Form Data"
+  val API_TYPE_PARAMETERIZED_HTTP_ERROR_BY_QUERY_STRING = "Parameterized Http Error By Query String"
+  val API_TYPE_PARAMETERIZED_HTTP_ERROR_BY_FORM_DATA = "Parameterized Http Error By Form Data"
+  val API_TYPE_FILE_UPLOAD = "File Upload"
+  val API_TYPE_FILE_UPLOAD_ERROR = "File Upload Error"
+  val API_TYPE_FILE_DOWNLOAD = "File Download"
 
   val MATCH_PARAM = """\w+""".r
   val MATCH_ANY: PathMatcher1[String] = Rest
@@ -66,6 +77,26 @@ trait ConfiguratorUtils extends SLF4JLogging {
       case Singular() => "Singular"
       case Random() => "Random"
       case ByParam() => "By Parameter"
+    }
+  }
+
+  protected def fileExists(fileName: String): Boolean = {
+    if (Configuration.downloadsDir.isEmpty) {
+      val resourceUrl = this.getClass().getResource("/downloads" + fileName)
+      val resourcePath: Path = Paths.get(resourceUrl.toURI());
+      resourcePath.toFile.exists()
+    } else {
+      new File(Configuration.downloadsDir + File.separator + fileName).exists()
+    }
+  }
+
+  protected def fileNameToFile(fileName: String): File = {
+    if (Configuration.downloadsDir.isEmpty) {
+      val resourceUrl = this.getClass().getResource("/downloads" + fileName)
+      val resourcePath: Path = Paths.get(resourceUrl.toURI());
+      resourcePath.toFile
+    } else {
+      new File(Configuration.downloadsDir + File.separator + fileName)
     }
   }
 

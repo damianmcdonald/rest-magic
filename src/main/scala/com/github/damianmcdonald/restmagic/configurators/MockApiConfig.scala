@@ -74,3 +74,9 @@ object FormMode {
   case class ByQueryString() extends FormModeType
   case class ByFormData() extends FormModeType
 }
+
+object BinaryMode {
+  sealed trait BinaryModeType
+  case class Inline() extends BinaryModeType
+  case class Attachment() extends BinaryModeType
+}

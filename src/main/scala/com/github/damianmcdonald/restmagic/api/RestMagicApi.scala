@@ -19,16 +19,12 @@ package com.github.damianmcdonald.restmagic.api
 import akka.actor.{ ActorSystem, Props }
 import com.github.damianmcdonald.restmagic.RestMagicSetup
 import com.github.damianmcdonald.restmagic.configurators.FormMode.{ ByFormData, ByQueryString }
-import com.github.damianmcdonald.restmagic.configurators.{ RootApiConfig, SimpleRestConfig }
+import com.github.damianmcdonald.restmagic.configurators._
 import com.github.damianmcdonald.restmagic.services._
 import spray.http.StatusCodes
 import spray.routing.{ Directives, _ }
 import java.lang.reflect.Method
 import com.github.damianmcdonald.restmagic.system.RegistrableMock
-import com.github.damianmcdonald.restmagic.configurators.SimpleRestErrorConfig
-import com.github.damianmcdonald.restmagic.configurators.ParameterizedRestConfig
-import com.github.damianmcdonald.restmagic.configurators.ParameterizedRestErrorConfig
-import com.github.damianmcdonald.restmagic.configurators.ParameterizedHttpConfig
 
 trait AbstractSystem {
   implicit def system: ActorSystem
@@ -70,7 +66,25 @@ trait RestMagicApi extends RouteConcatenation with StaticRoute with AbstractSyst
             case ByQueryString() => new ParameterizedHttpByQueryStringService(cfg)
             case ByFormData() => new ParameterizedHttpByFormDataService(cfg)
           }
-
+        }
+        case cfg: ParameterizedHttpErrorConfig => {
+          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this ParameterizedHttpError Api"))
+          cfg.formMode match {
+            case ByQueryString() => new ParameterizedHttpErrorByQueryStringService(cfg)
+            case ByFormData() => new ParameterizedHttpErrorByFormDataService(cfg)
+          }
+        }
+        case cfg: FileUploadConfig => {
+          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this FileUpload Api"))
+          new FileUploadService(cfg)
+        }
+        case cfg: FileUploadErrorConfig => {
+          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this FileUploadError Api"))
+          new FileUploadErrorService(cfg)
+        }
+        case cfg: FileDownloadConfig => {
+          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this FileDownload Api"))
+          new FileDownloadService(cfg)
         }
         case _ => throw new MatchError("Unable to find match for service!!!!!")
       }
@@ -96,7 +110,7 @@ trait RestMagicApi extends RouteConcatenation with StaticRoute with AbstractSyst
     }
 
     val xs = configToService(getRegistrableMocks)
-    concatRoutes(xs) ~ staticRoute
+    concatRoutes(xs) ~ new AuthenticateService().route ~ staticRoute
   }
 }
 
@@ -108,6 +122,6 @@ trait StaticRoute extends Directives {
       getFromResourceDirectory("web/assets/images/")
     } ~
       pathEndOrSingleSlash {
-        getFromResource("web/index.html")
+        getFromResource("web/upload.html")
       } ~ complete(StatusCodes.NotFound)
 }

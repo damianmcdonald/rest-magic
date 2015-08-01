@@ -17,7 +17,8 @@
 package com.github.damianmcdonald.restmagic.configurators
 
 import com.github.damianmcdonald.restmagic.configurators.DataMode.DataModeType
-import com.github.damianmcdonald.restmagic.configurators.ParameterizedRestConfig._
+import com.github.damianmcdonald.restmagic.configurators.ServeMode.ByParam
+import com.github.damianmcdonald.restmagic.configurators.SimpleRestConfig._
 import com.github.damianmcdonald.restmagic.configurators.utils.ConfiguratorUtils
 import com.github.damianmcdonald.restmagic.exceptions.MethodNotSupportedException
 import spray.http.MediaType
@@ -27,18 +28,20 @@ import spray.http.HttpMethods
 import spray.routing.{ Directive0, PathMatcher0 }
 import spray.http.HttpMethod
 
-object SimpleRestConfig extends ConfiguratorUtils {
+object FileUploadConfig extends ConfiguratorUtils {
   def apply(
     httpMethod: HttpMethod,
     apiPath: PathMatcher0,
     produces: MediaType,
     dataMode: DataModeType,
-    responseData: String
-  ): SimpleRestConfig = {
+    responseData: String,
+    fileParamName: String
+  ): FileUploadConfig = {
     assert(!responseData.isEmpty, ERROR_EMPTY_STRING)
+    assert(!fileParamName.isEmpty, ERROR_EMPTY_FILE_PARAM_NAME)
     val validatedResponse = validateAndLoadResponses(dataMode, produces, responseData)
     val directive = httpMethodToDirective(httpMethod)
-    new SimpleRestConfig(directive, apiPath, produces, dataMode, validatedResponse)
+    new FileUploadConfig(directive, apiPath, produces, dataMode, fileParamName, validatedResponse)
   }
 
   def apply(
@@ -47,12 +50,14 @@ object SimpleRestConfig extends ConfiguratorUtils {
     produces: MediaType,
     dataMode: DataModeType,
     responseData: String,
+    fileParamName: String,
     validate: Boolean
-  ): SimpleRestConfig = {
+  ): FileUploadConfig = {
     assert(!responseData.isEmpty, ERROR_EMPTY_STRING)
+    assert(!fileParamName.isEmpty, ERROR_EMPTY_FILE_PARAM_NAME)
     val validatedResponse = if (validate) validateAndLoadResponses(dataMode, produces, responseData) else loadResponses(dataMode, responseData)
     val directive = httpMethodToDirective(httpMethod)
-    new SimpleRestConfig(directive, apiPath, produces, dataMode, validatedResponse)
+    new FileUploadConfig(directive, apiPath, produces, dataMode, fileParamName, validatedResponse)
   }
 
   def apply(
@@ -61,11 +66,13 @@ object SimpleRestConfig extends ConfiguratorUtils {
     produces: MediaType,
     dataMode: DataModeType,
     responseData: String,
+    fileParamName: String,
     validate: Boolean,
     displayName: String,
     displayUrl: String
-  ): SimpleRestConfig = {
+  ): FileUploadConfig = {
     assert(!responseData.isEmpty, ERROR_EMPTY_STRING)
+    assert(!fileParamName.isEmpty, ERROR_EMPTY_FILE_PARAM_NAME)
     val validatedResponse = if (validate) validateAndLoadResponses(dataMode, produces, responseData) else loadResponses(dataMode, responseData)
     val directive = httpMethodToDirective(httpMethod)
     val registeredApi = {
@@ -78,19 +85,20 @@ object SimpleRestConfig extends ConfiguratorUtils {
           dataModeTypeToString(dataMode),
           serveModeTypeToString(ServeMode.Singular()),
           Map("singular" -> validatedResponse),
-          API_TYPE_SIMPLE_REST
+          API_TYPE_FILE_UPLOAD
         )
       )
     }
-    new SimpleRestConfig(directive, apiPath, produces, dataMode, validatedResponse, registeredApi)
+    new FileUploadConfig(directive, apiPath, produces, dataMode, validatedResponse, fileParamName, registeredApi)
   }
 }
 
-case class SimpleRestConfig(
+case class FileUploadConfig(
   httpMethod: Directive0,
   apiPath: PathMatcher0,
   produces: MediaType,
   dataMode: DataModeType,
   responseData: String,
+  fileParamName: String,
   registeredApi: Option[RegisteredApi] = None
 ) extends RootApiConfig

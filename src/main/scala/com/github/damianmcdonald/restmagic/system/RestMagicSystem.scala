@@ -27,15 +27,12 @@ import spray.routing.Directives
 object RestMagicSystem extends App with RestMagicApi {
   implicit lazy val system = ActorSystem("restmagic-system")
   sys.addShutdownHook({ system.shutdown })
-
-  //TODO: Add api route list actor!!!
-
-  // We could use IO(UHttp) here instead of killing the "/user/IO-HTTP" actor
   IO(Http) ! Http.Bind(rootService, Configuration.host, Configuration.port)
 }
 
 object Configuration extends Directives {
   import com.typesafe.config.ConfigFactory
+  import org.apache.commons.lang3.SystemUtils
 
   // load configuration settings from application.conf
   // in the default location
@@ -47,11 +44,46 @@ object Configuration extends Directives {
   lazy val port = config.getString("restmagic.port").toInt
 
   lazy val stubsDir = {
-    if (config.getString("restmagic.stubs-dir").isEmpty) {
+    if (config.getString("restmagic.stubs.root").isEmpty) {
       ""
     } else {
-      val file = new File(config.getString("restmagic.stubs-dir"))
+      val file = new File(config.getString("restmagic.stubs.root"))
       if (file.exists()) file.getAbsolutePath else ""
     }
   }
+
+  /*
+  lazy val uploadsDir = {
+    if (config.getString("restmagic.upload.root").isEmpty) {
+      if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX) {
+        if (new File("/tmp").exists()) "/tmp"
+        else "/var/tmp"
+      } else if (SystemUtils.IS_OS_WINDOWS) {
+        scala.util.Properties.envOrElse("TEMP", "C:/temp")
+      }
+    } else {
+      val file = new File(config.getString("restmagic.upload.root"))
+      if (file.exists()) file.getAbsolutePath else ""
+    }
+  }
+  */
+
+  lazy val uploadsDir = {
+    if (config.getString("restmagic.upload.root").isEmpty) {
+      ""
+    } else {
+      val file = new File(config.getString("restmagic.downloads.root"))
+      if (file.exists()) file.getAbsolutePath else ""
+    }
+  }
+
+  lazy val downloadsDir = {
+    if (config.getString("restmagic.downloads.root").isEmpty) {
+      ""
+    } else {
+      val file = new File(config.getString("restmagic.downloads.root"))
+      if (file.exists()) file.getAbsolutePath else ""
+    }
+  }
+
 }
