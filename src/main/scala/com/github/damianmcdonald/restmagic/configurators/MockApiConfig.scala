@@ -28,15 +28,15 @@ import spray.routing.Directives._
 trait RootApiConfig
 
 class RegisteredApi(
-    displayName: String,
-    displayUrl: String,
-    httpMethod: String,
-    produces: String,
-    dataMode: String,
-    serveMode: String,
-    responseData: Map[String, String],
-    apiType: String,
-    paramName: Option[String] = None
+    val displayName: String,
+    val displayUrl: String,
+    val httpMethod: String,
+    val produces: String,
+    val dataMode: String,
+    val serveMode: String,
+    val responseData: Map[String, String],
+    val apiType: String,
+    val paramName: Option[String] = None
 ) {
 
   val id: String = Random.alphanumeric.take(10).mkString("") + "_" + System.currentTimeMillis

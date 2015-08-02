@@ -22,22 +22,21 @@ import com.github.damianmcdonald.restmagic.configurators.{ RegisteredApi, Simple
 import spray.http.MediaTypes.`application/json`
 import spray.routing.Directives
 
-class ApiDirectoryService(apis: List[RegisteredApi])(implicit system: ActorSystem) extends Directives with RootMockService with SLF4JLogging {
+class ApiDirectoryService(apis: Map[String, List[RegisteredApi]])(implicit system: ActorSystem) extends Directives with RootMockService with SLF4JLogging {
 
   lazy val route =
     path("restmagic" / "api" / "directory") {
       get {
         respondWithMediaType(`application/json`) {
           complete {
-            val start = """{"apis": ["""
-            val content = apis.map { e => e.toJson } mkString ","
-            val end = """] }"""
+            val apiContent = apis.map({ case (k, v) => """{ "directive":"""" + k.toString + """",""" + """"registeredApis": [ """ + v.map(api => api.toJson).mkString(",") + """] }""" }).mkString(",")
             if (apis.isEmpty) """{ "status": "No registered API's" }"""
-            else
-              s"""{"apis": [
-                 |$content
-                 | ]
-                 |}""".stripMargin
+            else {
+              import net.liftweb.json._
+              implicit val formats = net.liftweb.json.DefaultFormats
+              val json = s"""{"apis": [ $apiContent ] }"""
+              pretty(render(parse(json)))
+            }
           }
         }
       }

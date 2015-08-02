@@ -47,10 +47,46 @@ class MyMockApi extends RegistrableMock {
     displayUrl = "/restmagic/hello"
   )
 
+  private val postHelloWorldJsonApi = SimpleRestConfig(
+    httpMethod = POST,
+    apiPath = "restmagic" / "hello" / "post",
+    produces = `application/json`,
+    dataMode = Inline(),
+    responseData = """{ "response": "Merhaba Dunya" }""",
+    validate = true,
+    displayName = "Hello World Api Post",
+    displayUrl = "/restmagic/hello/post"
+  )
+
+  private val putHelloWorldJsonApi = SimpleRestConfig(
+    httpMethod = PUT,
+    apiPath = "restmagic" / "hello" / "put",
+    produces = `application/json`,
+    dataMode = Inline(),
+    responseData = """{ "response": "Merhaba Dunya" }""",
+    validate = true,
+    displayName = "Hello World Api Put",
+    displayUrl = "/restmagic/hello/put"
+  )
+
+  private val deleteHelloWorldJsonApi = SimpleRestConfig(
+    httpMethod = DELETE,
+    apiPath = "restmagic" / "hello" / "delete",
+    produces = `application/json`,
+    dataMode = Inline(),
+    responseData = """{ "response": "Merhaba Dunya" }""",
+    validate = true,
+    displayName = "Hello World Api Delete",
+    displayUrl = "/restmagic/hello/delete"
+  )
+
   override def getApiConfig = {
     List(
       welcomeJsonApi,
-      helloWorldJsonApi
+      helloWorldJsonApi,
+      postHelloWorldJsonApi,
+      putHelloWorldJsonApi,
+      deleteHelloWorldJsonApi
     )
   }
 }

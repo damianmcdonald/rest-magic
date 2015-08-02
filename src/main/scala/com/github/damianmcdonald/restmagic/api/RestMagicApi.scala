@@ -116,7 +116,13 @@ trait RestMagicApi extends RouteConcatenation with StaticRoute with AbstractSyst
 
     val xs = configToService(getRegistrableMocks)
     val services = xs map { e => e._1 }
-    val apis = xs.map(e => e._2).flatten
+    val apis = xs.map(e => e._2).flatten.groupBy {
+      case api if api.httpMethod.equalsIgnoreCase("Get") => "Get"
+      case api if api.httpMethod.equalsIgnoreCase("Post") => "Post"
+      case api if api.httpMethod.equalsIgnoreCase("Put") => "Put"
+      case api if api.httpMethod.equalsIgnoreCase("Delete") => "Delete"
+      case _ => throw new MatchError("Unable to find match for httpMethod!!!!!")
+    }
     concatRoutes(services) ~ new ApiDirectoryService(apis).route ~ staticRoute
   }
 }
