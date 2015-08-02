@@ -37,17 +37,19 @@ class ParameterizedHttpErrorByQueryStringService(cfg: ParameterizedHttpErrorConf
     path(cfg.apiPath) {
       cfg.httpMethod {
         parameter(cfg.paramName ?) { query =>
-          val error = cfg.serveMode match {
-            case Singular() => serveSingularError(cfg.responseData)
-            case Random() => serveRandomError(cfg.responseData)
-            case ByParam() => {
-              query match {
-                case Some(s) => serveByParamError(s, cfg.responseData)
-                case None => ErrorCode(BadRequest, "Parameter: " + cfg.paramName + " is missing!")
+          complete {
+            val error = cfg.serveMode match {
+              case Singular() => serveSingularError(cfg.responseData)
+              case Random() => serveRandomError(cfg.responseData)
+              case ByParam() => {
+                query match {
+                  case Some(s) => serveByParamError(s, cfg.responseData)
+                  case None => ErrorCode(BadRequest, "Parameter: " + cfg.paramName + " is missing!")
+                }
               }
             }
+            (error.errorCode, error.errorMessage)
           }
-          complete(error.errorCode, error.errorMessage)
         }
       }
     }

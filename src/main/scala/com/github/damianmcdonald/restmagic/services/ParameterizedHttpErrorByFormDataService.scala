@@ -32,18 +32,20 @@ class ParameterizedHttpErrorByFormDataService(cfg: ParameterizedHttpErrorConfig)
   lazy val route =
     path(cfg.apiPath) {
       cfg.httpMethod {
-        formFields(cfg.paramName?) { query =>
-          val error: ErrorCode = cfg.serveMode match {
-            case Singular() => serveSingularError(cfg.responseData)
-            case Random() => serveRandomError(cfg.responseData)
-            case ByParam() => {
-              query match {
-                case Some(s) => serveByParamError(s, cfg.responseData)
-                case None => ErrorCode(BadRequest, "Parameter: " + cfg.paramName + " is missing!")
+        formFields(cfg.paramName ?) { query =>
+          complete {
+            val error: ErrorCode = cfg.serveMode match {
+              case Singular() => serveSingularError(cfg.responseData)
+              case Random() => serveRandomError(cfg.responseData)
+              case ByParam() => {
+                query match {
+                  case Some(s) => serveByParamError(s, cfg.responseData)
+                  case None => ErrorCode(BadRequest, "Parameter: " + cfg.paramName + " is missing!")
+                }
               }
             }
+            (error.errorCode, error.errorMessage)
           }
-          complete(error.errorCode, error.errorMessage)
         }
       }
     }

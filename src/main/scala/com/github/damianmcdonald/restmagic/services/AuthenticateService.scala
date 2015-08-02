@@ -18,6 +18,7 @@ package com.github.damianmcdonald.restmagic.services
 
 import akka.actor.ActorSystem
 import akka.event.slf4j.SLF4JLogging
+import com.github.damianmcdonald.restmagic.configurators.AuthenticateConfig
 import spray.http.StatusCodes
 import spray.routing.Directives
 import spray.routing.authentication.{ BasicAuth, UserPass }
@@ -27,18 +28,12 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 class UserDetails(val userName: String, val password: String, val isAuthenticated: Boolean)
 
-class AuthenticateService(implicit system: ActorSystem) extends Directives with RootMockService with SLF4JLogging {
+class AuthenticateService(cfg: AuthenticateConfig)(implicit system: ActorSystem) extends Directives with RootMockService with SLF4JLogging {
 
   implicit val ec: ExecutionContext = system.dispatcher
 
   def isCredentialValid(userPass: Option[UserPass]): Boolean = {
-    val credentials: Map[String, String] = Map(
-      "luke" -> "12345",
-      "han" -> "12345",
-      "vader" -> "12345",
-      "leia" -> "12345",
-      "chewy" -> "12345"
-    )
+    val credentials: Map[String, String] = cfg.credentials
 
     userPass match {
       case Some(UserPass(user, pass)) => {
@@ -53,7 +48,7 @@ class AuthenticateService(implicit system: ActorSystem) extends Directives with 
   }
 
   def isAuthorizedForSecuredPage(userName: String): Boolean = {
-    userName == "luke"
+    cfg.authorizedUsers.contains(userName)
   }
 
   def basicUserAuthenticator(implicit ec: ExecutionContext): AuthMagnet[UserDetails] = {
@@ -84,19 +79,23 @@ class AuthenticateService(implicit system: ActorSystem) extends Directives with 
     }
 
   lazy val route =
-    pathPrefix("authenticate") {
-      authenticate(basicUserAuthenticator) { userDetails: UserDetails =>
-        path("secured") {
-          // authorize(isAuthorizedForSecuredPage(userDetails.userName)) {
-          complete {
-            if (isAuthorizedForSecuredPage(userDetails.userName)) "Authorized successfully" else (StatusCodes.Forbidden, "Authorization failure!")
+    pathPrefix(cfg.securePathPrefix) {
+      respondWithMediaType(cfg.produces) {
+        cfg.httpMethod {
+          authenticate(basicUserAuthenticator) { userDetails: UserDetails =>
+            path(cfg.authorizePath) {
+              // authorize(isAuthorizedForSecuredPage(userDetails.userName)) {
+              complete {
+                if (isAuthorizedForSecuredPage(userDetails.userName)) cfg.authorizeResponseData else (StatusCodes.Forbidden, "Authorization failure!")
+              }
+            } ~
+              path(cfg.authenticatePath) {
+                complete {
+                  if (userDetails.isAuthenticated) cfg.authenticateResponseData else (StatusCodes.Unauthorized, "Authentication failure!")
+                }
+              }
           }
-        } ~
-          path("unsecured") {
-            complete {
-              if (userDetails.isAuthenticated) "Authenticated successfully" else (StatusCodes.Unauthorized, "Authentication failure!")
-            }
-          }
+        }
       }
     }
 

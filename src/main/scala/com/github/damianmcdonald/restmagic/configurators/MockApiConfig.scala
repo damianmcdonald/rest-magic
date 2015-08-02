@@ -17,6 +17,7 @@
 package com.github.damianmcdonald.restmagic.configurators
 
 import scala.annotation.tailrec
+import scala.util.Random
 import scala.util.matching.Regex
 
 import shapeless.HList
@@ -38,6 +39,9 @@ class RegisteredApi(
     paramName: Option[String] = None
 ) {
 
+  val id: String = Random.alphanumeric.take(10).mkString("") + "_" + System.currentTimeMillis
+  val jsonResponseData = responseData.map({ case (k, v) => (k.toString.replaceAll("\"", "'") -> v.toString.replaceAll("\"", "'")) })
+
   override def toString: String = {
     s"""
     |displayName: $displayName
@@ -49,6 +53,24 @@ class RegisteredApi(
     |responseData: $responseData
     |apiType: $apiType
     |paramName: $paramName
+    |id: $id
+    """.stripMargin
+  }
+
+  def toJson: String = {
+    s"""
+        |  {
+        |    "displayName": "$displayName",
+        |    "displayUrl": "$displayUrl",
+        |    "httpMethod": "$httpMethod",
+        |    "produces": "$produces",
+        |    "dataMode": "$dataMode",
+        |    "serverMode": "$serveMode",
+        |    "responseData": "$jsonResponseData",
+        |    "apiType": "$apiType",
+        |    "paramName": "$paramName",
+        |    "id": "$id"
+        |  }
     """.stripMargin
   }
 

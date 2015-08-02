@@ -40,6 +40,8 @@ trait ConfiguratorUtils extends SLF4JLogging {
   val ERROR_EMPTY_STRING = "responseData can not be empty. You must provide a response entry"
   val ERROR_EMPTY_FILE_PARAM_NAME = "The fileParamName can not be empty. This value is used identify the file part of a multi part form submission. You must provide a fileParamName"
   val ERROR_FILE_DOWNLOAD_NOT_EXISTS = "The provided filePath can not be resolved to a valid file."
+  val ERROR_EMPTY_CREDENTIALS = "The credentials map can not be empty. You must provide at least one user -> password entry"
+  val ERROR_EMPTY_AUTHORIZED_USERS = "The authorizedUsers list can not be empty. You must provide at least one authorized user"
 
   val API_TYPE_SIMPLE_REST = "Simple Rest"
   val API_TYPE_PARAMETERIZED_REST = "Parameterized Rest"
@@ -52,6 +54,7 @@ trait ConfiguratorUtils extends SLF4JLogging {
   val API_TYPE_FILE_UPLOAD = "File Upload"
   val API_TYPE_FILE_UPLOAD_ERROR = "File Upload Error"
   val API_TYPE_FILE_DOWNLOAD = "File Download"
+  val API_TYPE_AUTHENTICATE = "Authenticate"
 
   val MATCH_PARAM = """\w+""".r
   val MATCH_ANY: PathMatcher1[String] = Rest

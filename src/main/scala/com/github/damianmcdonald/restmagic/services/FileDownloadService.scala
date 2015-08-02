@@ -29,8 +29,8 @@ class FileDownloadService(cfg: FileDownloadConfig)(implicit system: ActorSystem)
     }
 
   def getBinaryHeaders(binaryMode: BinaryModeType, produces: MediaType, fileName: String): List[HttpHeader] = {
-    val header1 = `Content-Type`(cfg.produces)
-    val header2 = {
+    val contentType = `Content-Type`(cfg.produces)
+    val contentDisposition = {
       val binary = {
         binaryMode match {
           case Inline() => "inline"
@@ -39,7 +39,7 @@ class FileDownloadService(cfg: FileDownloadConfig)(implicit system: ActorSystem)
       }
       `Content-Disposition`(binary, Map("filename" -> fileName))
     }
-    List(header1, header2)
+    List(contentType, contentDisposition)
   }
 
 }

@@ -31,12 +31,14 @@ class ParameterizedRestErrorService(cfg: ParameterizedRestErrorConfig)(implicit 
   lazy val route =
     path(cfg.apiPath) { param =>
       cfg.httpMethod {
-        val error = cfg.serveMode match {
-          case Singular() => serveSingularError(cfg.responseData)
-          case Random() => serveRandomError(cfg.responseData)
-          case ByParam() => serveByParamError(param.toString, cfg.responseData)
+        complete {
+          val error = cfg.serveMode match {
+            case Singular() => serveSingularError(cfg.responseData)
+            case Random() => serveRandomError(cfg.responseData)
+            case ByParam() => serveByParamError(param.toString, cfg.responseData)
+          }
+          (error.errorCode, error.errorMessage)
         }
-        complete(error.errorCode, error.errorMessage)
       }
     }
 
