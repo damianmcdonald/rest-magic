@@ -17,6 +17,7 @@
 package com.github.damianmcdonald.restmagic.api
 
 import akka.actor.{ ActorSystem, Props }
+import akka.event.slf4j.SLF4JLogging
 import com.github.damianmcdonald.restmagic.MyMockApi
 import com.github.damianmcdonald.restmagic.configurators.FormMode.{ ByFormData, ByQueryString }
 import com.github.damianmcdonald.restmagic.configurators._
@@ -30,7 +31,7 @@ trait AbstractSystem {
   implicit def system: ActorSystem
 }
 
-trait RestMagicApi extends RouteConcatenation with StaticRoute with AbstractSystem {
+trait RestMagicApi extends RouteConcatenation with StaticRoute with AbstractSystem with SLF4JLogging {
 
   private def getRegistrableMocks: List[RootApiConfig] = {
     import org.reflections.Reflections
@@ -45,49 +46,49 @@ trait RestMagicApi extends RouteConcatenation with StaticRoute with AbstractSyst
     xs map (e => {
       e match {
         case cfg: SimpleRestConfig => {
-          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this SimpleRest Api"))
+          log.debug("Registered Api Details >>> " + cfg.registeredApi.getOrElse("No registration details available for this SimpleRest Api"))
           (new SimpleRestService(cfg) -> cfg.registeredApi)
         }
         case cfg: SimpleRestErrorConfig => {
-          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this SimpleRestError Api"))
+          log.debug("Registered Api Details >>> " + cfg.registeredApi.getOrElse("No registration details available for this SimpleRestError Api"))
           (new SimpleRestErrorService(cfg) -> cfg.registeredApi)
         }
         case cfg: ParameterizedRestConfig => {
-          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this ParameterizedRest Api"))
+          log.debug("Registered Api Details >>> " + cfg.registeredApi.getOrElse("No registration details available for this ParameterizedRest Api"))
           (new ParameterizedRestService(cfg) -> cfg.registeredApi)
         }
         case cfg: ParameterizedRestErrorConfig => {
-          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this ParameterizedRestError Api"))
+          log.debug("Registered Api Details >>> " + cfg.registeredApi.getOrElse("No registration details available for this ParameterizedRestError Api"))
           (new ParameterizedRestErrorService(cfg) -> cfg.registeredApi)
         }
         case cfg: ParameterizedHttpConfig => {
-          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this ParameterizedHttp Api"))
+          log.debug("Registered Api Details >>> " + cfg.registeredApi.getOrElse("No registration details available for this ParameterizedHttp Api"))
           cfg.formMode match {
             case ByQueryString() => (new ParameterizedHttpByQueryStringService(cfg) -> cfg.registeredApi)
             case ByFormData() => (new ParameterizedHttpByFormDataService(cfg) -> cfg.registeredApi)
           }
         }
         case cfg: ParameterizedHttpErrorConfig => {
-          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this ParameterizedHttpError Api"))
+          log.debug("Registered Api Details >>> " + cfg.registeredApi.getOrElse("No registration details available for this ParameterizedHttpError Api"))
           cfg.formMode match {
             case ByQueryString() => (new ParameterizedHttpErrorByQueryStringService(cfg) -> cfg.registeredApi)
             case ByFormData() => (new ParameterizedHttpErrorByFormDataService(cfg) -> cfg.registeredApi)
           }
         }
         case cfg: FileUploadConfig => {
-          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this FileUpload Api"))
+          log.debug("Registered Api Details >>> " + cfg.registeredApi.getOrElse("No registration details available for this FileUpload Api"))
           (new FileUploadService(cfg) -> cfg.registeredApi)
         }
         case cfg: FileUploadErrorConfig => {
-          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this FileUploadError Api"))
+          log.debug("Registered Api Details >>> " + cfg.registeredApi.getOrElse("No registration details available for this FileUploadError Api"))
           (new FileUploadErrorService(cfg) -> cfg.registeredApi)
         }
         case cfg: FileDownloadConfig => {
-          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this FileDownload Api"))
+          log.debug("Registered Api Details >>> " + cfg.registeredApi.getOrElse("No registration details available for this FileDownload Api"))
           (new FileDownloadService(cfg) -> cfg.registeredApi)
         }
         case cfg: AuthenticateConfig => {
-          println("INFO >>> " + cfg.registeredApi.getOrElse("No registration details available for this Authenticate Api"))
+          log.debug("Registered Api Details >>> " + cfg.registeredApi.getOrElse("No registration details available for this Authenticate Api"))
           (new AuthenticateService(cfg) -> cfg.registeredApi)
         }
         case _ => throw new MatchError("Unable to find match for service!!!!!")

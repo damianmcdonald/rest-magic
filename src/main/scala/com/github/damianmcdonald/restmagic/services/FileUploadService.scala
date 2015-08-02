@@ -24,7 +24,7 @@ class FileUploadService(cfg: FileUploadConfig)(implicit system: ActorSystem) ext
                 val name = "rest-magic-file-upload"
                 if (Configuration.uploadsDir.isEmpty) {
                   val resourceUrl = this.getClass().getResource("/uploads")
-                  val resourcePath: Path = Paths.get(resourceUrl.toURI());
+                  val resourcePath: Path = Paths.get(resourceUrl.toURI())
                   resourcePath.toFile.getAbsolutePath + File.separator + name
                 } else {
                   new File(Configuration.uploadsDir + File.separator + name).getAbsolutePath

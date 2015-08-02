@@ -1,5 +1,7 @@
 = rest-magic
 
+image:https://travis-ci.org/damianmcdonald/rest-magic.svg?branch=master["Build Status", link="https://travis-ci.org/damianmcdonald/rest-magic"]
+
 Under construction
  
 
