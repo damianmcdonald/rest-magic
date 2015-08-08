@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+import de.heikoseeberger.sbtheader.HeaderPattern
+import de.heikoseeberger.sbtheader.license.Apache2_0
+
+lazy val restmagic = project.in(file(".")).enablePlugins(AutomateHeaderPlugin)
+
 name := "rest-magic"
 
 version       := "1.0.0"
@@ -62,6 +67,10 @@ libraryDependencies ++= {
     "org.specs2"                  %%  "specs2"                  % "2.4.17" % "test"      // until spray-testkit gets compiled against specs 3.3
   )
 }
+
+headers := Map(
+  "scala" -> Apache2_0("2015", "Damian McDonald")
+)
 
 Revolver.settings
 

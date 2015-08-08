@@ -32,7 +32,7 @@ object ParameterizedRestConfig extends ConfiguratorUtils {
     dataMode: DataModeType,
     responseData: Map[String, String],
     serveMode: ServeModeType
-  ) = {
+  ): ParameterizedRestConfig = {
     assert(responseData.nonEmpty, ERROR_EMPTY_MAP)
     assert(if (responseData.size == 1 && !serveMode.isInstanceOf[ServeMode.Singular]) false else true, ERROR_SINGULAR_MODE)
     assert(if (responseData.size > 1 && serveMode.isInstanceOf[ServeMode.Singular]) false else true, ERROR_MULTI_MODE)
@@ -49,7 +49,7 @@ object ParameterizedRestConfig extends ConfiguratorUtils {
     responseData: Map[String, String],
     serveMode: ServeModeType,
     validate: Boolean
-  ) = {
+  ): ParameterizedRestConfig = {
     assert(responseData.nonEmpty, ERROR_EMPTY_MAP)
     assert(if (responseData.size == 1 && !serveMode.isInstanceOf[ServeMode.Singular]) false else true, ERROR_SINGULAR_MODE)
     assert(if (responseData.size > 1 && serveMode.isInstanceOf[ServeMode.Singular]) false else true, ERROR_MULTI_MODE)
@@ -68,7 +68,7 @@ object ParameterizedRestConfig extends ConfiguratorUtils {
     validate: Boolean,
     displayName: String,
     displayUrl: String
-  ) = {
+  ): ParameterizedRestConfig = {
     assert(responseData.nonEmpty, ERROR_EMPTY_MAP)
     assert(if (responseData.size == 1 && !serveMode.isInstanceOf[ServeMode.Singular]) false else true, ERROR_SINGULAR_MODE)
     assert(if (responseData.size > 1 && serveMode.isInstanceOf[ServeMode.Singular]) false else true, ERROR_MULTI_MODE)

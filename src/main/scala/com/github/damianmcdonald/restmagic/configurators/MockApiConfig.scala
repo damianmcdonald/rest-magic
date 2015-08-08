@@ -39,17 +39,20 @@ class RegisteredApi(
     val paramName: Option[String] = None
 ) {
 
-  val id: String = Random.alphanumeric.take(10).mkString("") + "_" + System.currentTimeMillis
+  val id: String = {
+    val LENGTH = 10
+    Random.alphanumeric.take(LENGTH).mkString("") + "_" + System.currentTimeMillis
+  }
   val jsonResponseData = responseData.map({ case (k, v) => (k.toString.replaceAll("\"", "'") -> v.toString.replaceAll("\"", "'")) })
 
   override def toString: String = {
     s"""
     |displayName: $displayName
     |displayUrl: $displayUrl
-    |httpMethod: $httpMethod 
+    |httpMethod: $httpMethod
     |produces: $produces
-    |dataMode: $dataMode 
-    |serverMode: $serveMode 
+    |dataMode: $dataMode
+    |serverMode: $serveMode
     |responseData: $responseData
     |apiType: $apiType
     |paramName: $paramName

@@ -58,7 +58,9 @@ class AuthenticateService(cfg: AuthenticateConfig)(implicit system: ActorSystem)
           case Some(UserPass(user, pass)) => Some(new UserDetails(user, pass, true))
           case None => Some(new UserDetails("", "", false))
         }
-      } else Some(new UserDetails("", "", false))
+      } else {
+        Some(new UserDetails("", "", false))
+      }
     }
 
     def authenticator(userPass: Option[UserPass]): Future[Option[UserDetails]] = Future {
@@ -75,7 +77,9 @@ class AuthenticateService(cfg: AuthenticateConfig)(implicit system: ActorSystem)
           case Some(UserPass(user, pass)) => Some(new UserDetails(user, pass, true))
           case None => Some(new UserDetails("", "", false))
         }
-      } else Some(new UserDetails("", "", false))
+      } else {
+        Some(new UserDetails("", "", false))
+      }
     }
 
   lazy val route =
@@ -86,12 +90,20 @@ class AuthenticateService(cfg: AuthenticateConfig)(implicit system: ActorSystem)
             path(cfg.authorizePath) {
               // authorize(isAuthorizedForSecuredPage(userDetails.userName)) {
               complete {
-                if (isAuthorizedForSecuredPage(userDetails.userName)) cfg.authorizeResponseData else (StatusCodes.Forbidden, "Authorization failure!")
+                if (isAuthorizedForSecuredPage(userDetails.userName)) {
+                  cfg.authorizeResponseData
+                } else {
+                  (StatusCodes.Forbidden, "Authorization failure!")
+                }
               }
             } ~
               path(cfg.authenticatePath) {
                 complete {
-                  if (userDetails.isAuthenticated) cfg.authenticateResponseData else (StatusCodes.Unauthorized, "Authentication failure!")
+                  if (userDetails.isAuthenticated) {
+                    cfg.authenticateResponseData
+                  } else {
+                    (StatusCodes.Unauthorized, "Authentication failure!")
+                  }
                 }
               }
           }

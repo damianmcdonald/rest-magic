@@ -31,7 +31,8 @@ import spray.http.StatusCodes._
 import spray.util.LoggingContext
 import spray.routing.ExceptionHandler
 
-class ParameterizedHttpErrorByQueryStringService(cfg: ParameterizedHttpErrorConfig)(implicit system: ActorSystem) extends Directives with RootMockService with SLF4JLogging {
+class ParameterizedHttpErrorByQueryStringService(cfg: ParameterizedHttpErrorConfig)(implicit system: ActorSystem)
+    extends Directives with RootMockService with SLF4JLogging {
 
   lazy val route =
     path(cfg.apiPath) {

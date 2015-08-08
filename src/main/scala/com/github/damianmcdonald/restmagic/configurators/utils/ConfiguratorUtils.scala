@@ -36,9 +36,14 @@ trait ConfiguratorUtils extends SLF4JLogging {
 
   val ERROR_MULTI_MODE = "Singular serve mode can only be used when the responseData Map contains a single entry. Please use Random or ByParam serve modes"
   val ERROR_EMPTY_MAP = "The responseData map can not be empty. You must provide at least one response entry"
-  val ERROR_SINGULAR_MODE = "The selected serve mode can only be used when the responseData Map contains more than one entry. Please add additional responses to the Map or use Singular serve mode"
-  def ERROR_EMPTY_STRING(field: String): String = { s"$field can not be empty. You must provide a $field entry" }
-  val ERROR_EMPTY_FILE_PARAM_NAME = "The fileParamName can not be empty. This value is used identify the file part of a multi part form submission. You must provide a fileParamName"
+  val ERROR_SINGULAR_MODE = {
+    "The selected serve mode can only be used when the responseData Map contains more than one entry." +
+      "Please add additional responses to the Map or use Singular serve mode"
+  }
+  val ERROR_EMPTY_FILE_PARAM_NAME = {
+    "The fileParamName can not be empty. " +
+      "This value is used identify the file part of a multi part form submission. You must provide a fileParamName"
+  }
   val ERROR_FILE_DOWNLOAD_NOT_EXISTS = "The provided filePath can not be resolved to a valid file."
   val ERROR_EMPTY_CREDENTIALS = "The credentials map can not be empty. You must provide at least one user -> password entry"
   val ERROR_EMPTY_AUTHORIZED_USERS = "The authorizedUsers list can not be empty. You must provide at least one authorized user"
@@ -58,6 +63,8 @@ trait ConfiguratorUtils extends SLF4JLogging {
 
   val MATCH_PARAM = """\w+""".r
   val MATCH_ANY: PathMatcher1[String] = Rest
+
+  def getEmptyFieldMessage(field: String): String = { s"$field can not be empty. You must provide a $field entry" }
 
   def httpMethodToDirective(httpMethod: HttpMethod): Directive0 = {
     httpMethod match {
@@ -85,9 +92,9 @@ trait ConfiguratorUtils extends SLF4JLogging {
 
   protected def fileExists(fileName: String): Boolean = {
     if (Configuration.downloadsDir.isEmpty) {
-      val resourceUrl = this.getClass().getResource("/downloads" + fileName)
-      if (resourceUrl == null) throw new FileNotFoundException("File: " + fileName + " not found")
-      val resourcePath: Path = Paths.get(resourceUrl.toURI());
+      val resourceUrl = Option(this.getClass().getResource("/downloads" + fileName))
+      val validUrl = resourceUrl.getOrElse(throw new FileNotFoundException("File: " + fileName + " not found"))
+      val resourcePath: Path = Paths.get(validUrl.toURI);
       resourcePath.toFile.exists()
     } else {
       new File(Configuration.downloadsDir + File.separator + fileName).exists()
@@ -96,9 +103,9 @@ trait ConfiguratorUtils extends SLF4JLogging {
 
   protected def fileNameToFile(fileName: String): File = {
     if (Configuration.downloadsDir.isEmpty) {
-      val resourceUrl = this.getClass().getResource("/downloads" + fileName)
-      if (resourceUrl == null) throw new FileNotFoundException("File: " + fileName + " not found")
-      val resourcePath: Path = Paths.get(resourceUrl.toURI());
+      val resourceUrl = Option(this.getClass().getResource("/downloads" + fileName))
+      val validUrl = resourceUrl.getOrElse(throw new FileNotFoundException("File: " + fileName + " not found"))
+      val resourcePath: Path = Paths.get(validUrl.toURI);
       resourcePath.toFile
     } else {
       new File(Configuration.downloadsDir + File.separator + fileName)
@@ -133,7 +140,7 @@ trait ConfiguratorUtils extends SLF4JLogging {
       case `text/html` => {
         scala.xml.XML.loadString(data) // if the html is not valid we will get an exception here!
       }
-      case _ => println("INFO >>> Noo validator available for MediaType: " + produces)
+      case _ => log.debug("No validator available for MediaType: " + produces)
     }
 
     data
@@ -167,7 +174,7 @@ trait ConfiguratorUtils extends SLF4JLogging {
           case `text/html` => {
             scala.xml.XML.loadString(data) // if the html is not valid we will get an exception here!
           }
-          case _ => println("INFO >>> Noo validator available for MediaType: " + produces)
+          case _ => log.debug("No validator available for MediaType: " + produces)
         }
         (key -> data)
       }

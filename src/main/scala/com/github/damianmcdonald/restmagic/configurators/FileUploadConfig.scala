@@ -37,7 +37,7 @@ object FileUploadConfig extends ConfiguratorUtils {
     responseData: String,
     fileParamName: String
   ): FileUploadConfig = {
-    assert(!responseData.isEmpty, ERROR_EMPTY_STRING("responseData"))
+    assert(!responseData.isEmpty, getEmptyFieldMessage("responseData"))
     assert(!fileParamName.isEmpty, ERROR_EMPTY_FILE_PARAM_NAME)
     val validatedResponse = validateAndLoadResponses(dataMode, produces, responseData)
     val directive = httpMethodToDirective(httpMethod)
@@ -53,7 +53,7 @@ object FileUploadConfig extends ConfiguratorUtils {
     fileParamName: String,
     validate: Boolean
   ): FileUploadConfig = {
-    assert(!responseData.isEmpty, ERROR_EMPTY_STRING("responseData"))
+    assert(!responseData.isEmpty, getEmptyFieldMessage("responseData"))
     assert(!fileParamName.isEmpty, ERROR_EMPTY_FILE_PARAM_NAME)
     val validatedResponse = if (validate) validateAndLoadResponses(dataMode, produces, responseData) else loadResponses(dataMode, responseData)
     val directive = httpMethodToDirective(httpMethod)
@@ -71,7 +71,7 @@ object FileUploadConfig extends ConfiguratorUtils {
     displayName: String,
     displayUrl: String
   ): FileUploadConfig = {
-    assert(!responseData.isEmpty, ERROR_EMPTY_STRING("responseData"))
+    assert(!responseData.isEmpty, getEmptyFieldMessage("responseData"))
     assert(!fileParamName.isEmpty, ERROR_EMPTY_FILE_PARAM_NAME)
     val validatedResponse = if (validate) validateAndLoadResponses(dataMode, produces, responseData) else loadResponses(dataMode, responseData)
     val directive = httpMethodToDirective(httpMethod)

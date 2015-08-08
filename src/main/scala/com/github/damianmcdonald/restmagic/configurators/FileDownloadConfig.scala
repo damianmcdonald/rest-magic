@@ -30,7 +30,7 @@ object FileDownloadConfig extends ConfiguratorUtils {
     produces: MediaType,
     filePath: String
   ): FileDownloadConfig = {
-    assert(!filePath.isEmpty, ERROR_EMPTY_STRING("filePath"))
+    assert(!filePath.isEmpty, getEmptyFieldMessage("filePath"))
     assert(fileExists(filePath), ERROR_FILE_DOWNLOAD_NOT_EXISTS + ": " + filePath)
     val directive = httpMethodToDirective(httpMethod)
     new FileDownloadConfig(directive, apiPath, produces, fileNameToFile(filePath), BinaryMode.Attachment())
@@ -45,7 +45,7 @@ object FileDownloadConfig extends ConfiguratorUtils {
     displayName: String,
     displayUrl: String
   ): FileDownloadConfig = {
-    assert(!filePath.isEmpty, ERROR_EMPTY_STRING("filePath"))
+    assert(!filePath.isEmpty, getEmptyFieldMessage("filePath"))
     assert(fileExists(filePath), ERROR_FILE_DOWNLOAD_NOT_EXISTS + ": " + filePath)
     val directive = httpMethodToDirective(httpMethod)
     val registeredApi = {

@@ -27,7 +27,8 @@ import spray.routing.Directive.pimpApply
 import spray.routing.Directives
 import spray.routing.directives.ParamDefMagnet.apply
 
-class ParameterizedHttpErrorByFormDataService(cfg: ParameterizedHttpErrorConfig)(implicit system: ActorSystem) extends Directives with RootMockService with SLF4JLogging {
+class ParameterizedHttpErrorByFormDataService(cfg: ParameterizedHttpErrorConfig)(implicit system: ActorSystem)
+    extends Directives with RootMockService with SLF4JLogging {
 
   lazy val route =
     path(cfg.apiPath) {

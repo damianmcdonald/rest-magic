@@ -29,7 +29,7 @@ object SimpleRestConfig extends ConfiguratorUtils {
     dataMode: DataModeType,
     responseData: String
   ): SimpleRestConfig = {
-    assert(!responseData.isEmpty, ERROR_EMPTY_STRING("responseData"))
+    assert(!responseData.isEmpty, getEmptyFieldMessage("responseData"))
     val validatedResponse = validateAndLoadResponses(dataMode, produces, responseData)
     val directive = httpMethodToDirective(httpMethod)
     new SimpleRestConfig(directive, apiPath, produces, dataMode, validatedResponse)
@@ -43,7 +43,7 @@ object SimpleRestConfig extends ConfiguratorUtils {
     responseData: String,
     validate: Boolean
   ): SimpleRestConfig = {
-    assert(!responseData.isEmpty, ERROR_EMPTY_STRING("responseData"))
+    assert(!responseData.isEmpty, getEmptyFieldMessage("responseData"))
     val validatedResponse = if (validate) validateAndLoadResponses(dataMode, produces, responseData) else loadResponses(dataMode, responseData)
     val directive = httpMethodToDirective(httpMethod)
     new SimpleRestConfig(directive, apiPath, produces, dataMode, validatedResponse)
@@ -59,7 +59,7 @@ object SimpleRestConfig extends ConfiguratorUtils {
     displayName: String,
     displayUrl: String
   ): SimpleRestConfig = {
-    assert(!responseData.isEmpty, ERROR_EMPTY_STRING("responseData"))
+    assert(!responseData.isEmpty, getEmptyFieldMessage("responseData"))
     val validatedResponse = if (validate) validateAndLoadResponses(dataMode, produces, responseData) else loadResponses(dataMode, responseData)
     val directive = httpMethodToDirective(httpMethod)
     val registeredApi = {

@@ -85,7 +85,8 @@ object AuthenticateConfig extends ConfiguratorUtils {
         )
       )
     }
-    new AuthenticateConfig(directive, securePathPrefix, authenticatePath, authorizePath, credentials, authorizedUsers, produces, authenticateResponseData, authorizeResponseData, registeredApi)
+    new AuthenticateConfig(directive, securePathPrefix, authenticatePath, authorizePath, credentials, authorizedUsers,
+      produces, authenticateResponseData, authorizeResponseData, registeredApi)
   }
 }
 
