@@ -94,86 +94,12 @@ class ParameterizedHttpByFormDataTestApi extends RegistrableMock {
     displayUrl = "/" + rootApiPath + "/examples/parameterizedhttp/delete"
   )
 
-  // http://localhost:8085/restmagic/examples/parameterizedhttp/error/querystring/get&errorId=1
-
-  private val errorWithGetByQueyStringParamApi = ParameterizedHttpErrorConfig(
-    httpMethod = GET,
-    apiPath = rootApiPath / "examples" / "parameterizedhttp" / "error" / "querystring" / "get",
-    responseData = Map(
-      "1" -> ErrorCode(BadRequest, "RestMagic BadRequest error"),
-      "2" -> ErrorCode(BandwidthLimitExceeded, "RestMagic BandwidthLimitExceeded error"),
-      "3" -> ErrorCode(GatewayTimeout, "RestMagic GatewayTimeout error"),
-      "4" -> ErrorCode(NetworkConnectTimeout, "RestMagic NetworkConnectTimeout error"),
-      "5" -> ErrorCode(RequestUriTooLong, "RestMagic RequestUriTooLong error")
-    ),
-    paramName = "errorId",
-    serveMode = ByParam(),
-    formMode = ByQueryString(),
-    displayName = "Parameterized Http Error Get by query string",
-    displayUrl = "/" + rootApiPath + "/examples/parameterizedhttp/error/querystring/get/{{errorId}}"
-  )
-
-  private val errorWithPostByQueyStringParamApi = ParameterizedHttpErrorConfig(
-    httpMethod = POST,
-    apiPath = rootApiPath / "examples" / "parameterizedhttp" / "error" / "querystring" / "post",
-    responseData = Map(
-      "1" -> ErrorCode(BadRequest, "RestMagic BadRequest error"),
-      "2" -> ErrorCode(BandwidthLimitExceeded, "RestMagic BandwidthLimitExceeded error"),
-      "3" -> ErrorCode(GatewayTimeout, "RestMagic GatewayTimeout error"),
-      "4" -> ErrorCode(NetworkConnectTimeout, "RestMagic NetworkConnectTimeout error"),
-      "5" -> ErrorCode(RequestUriTooLong, "RestMagic RequestUriTooLong error")
-    ),
-    paramName = "errorId",
-    serveMode = ByParam(),
-    formMode = ByQueryString(),
-    displayName = "Parameterized Http Error Post by query string",
-    displayUrl = "/" + rootApiPath + "/examples/parameterizedhttp/error/querystring/post/{{errorId}}"
-  )
-
-  private val errorWithGetByFormDataParamApi = ParameterizedHttpErrorConfig(
-    httpMethod = GET,
-    apiPath = rootApiPath / "examples" / "parameterizedhttp" / "error" / "formdata" / "get",
-    responseData = Map(
-      "1" -> ErrorCode(BadRequest, "RestMagic BadRequest error"),
-      "2" -> ErrorCode(BandwidthLimitExceeded, "RestMagic BandwidthLimitExceeded error"),
-      "3" -> ErrorCode(GatewayTimeout, "RestMagic GatewayTimeout error"),
-      "4" -> ErrorCode(NetworkConnectTimeout, "RestMagic NetworkConnectTimeout error"),
-      "5" -> ErrorCode(RequestUriTooLong, "RestMagic RequestUriTooLong error")
-    ),
-    paramName = "errorId",
-    serveMode = ByParam(),
-    formMode = ByFormData(),
-    displayName = "Parameterized Http Error Get by form data",
-    displayUrl = "/" + rootApiPath + "/examples/parameterizedhttp/error/formdata/get/{{errorId}}"
-  )
-
-  private val errorWithPostByFormDataParamApi = ParameterizedHttpErrorConfig(
-    httpMethod = POST,
-    apiPath = rootApiPath / "examples" / "parameterizedhttp" / "error" / "formdata" / "post",
-    responseData = Map(
-      "1" -> ErrorCode(BadRequest, "RestMagic BadRequest error"),
-      "2" -> ErrorCode(BandwidthLimitExceeded, "RestMagic BandwidthLimitExceeded error"),
-      "3" -> ErrorCode(GatewayTimeout, "RestMagic GatewayTimeout error"),
-      "4" -> ErrorCode(NetworkConnectTimeout, "RestMagic NetworkConnectTimeout error"),
-      "5" -> ErrorCode(RequestUriTooLong, "RestMagic RequestUriTooLong error")
-    ),
-    paramName = "errorId",
-    serveMode = ByParam(),
-    formMode = ByFormData(),
-    displayName = "Parameterized Http Error Post by form data",
-    displayUrl = "/" + rootApiPath + "/examples/parameterizedhttp/error/formdata/post/{{errorId}}"
-  )
-
   def getApiConfig: List[RootApiConfig] = {
     List(
       helloWorldJsonByParamApi,
       postByParamApi,
       putByParamApi,
-      deleteByParamApi,
-      errorWithGetByQueyStringParamApi,
-      errorWithPostByQueyStringParamApi,
-      errorWithGetByFormDataParamApi,
-      errorWithPostByFormDataParamApi
+      deleteByParamApi
     )
   }
 

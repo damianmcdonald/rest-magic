@@ -27,20 +27,9 @@ class FileUploadTestApi extends RegistrableMock {
     displayUrl = "/" + rootApiPath + "/examples/fileupload/post"
   )
 
-  private val postFileUploadErrorExampleApi = FileUploadErrorConfig(
-    httpMethod = POST,
-    apiPath = rootApiPath / "examples" / "fileupload" / "error" / "post",
-    errorCode = StatusCodes.InternalServerError,
-    errorMessage = "File upload has failed!",
-    fileParamName = "myfile",
-    displayName = "File Upload Error Post example",
-    displayUrl = "/" + rootApiPath + "/examples/fileupload/error/post"
-  )
-
   def getApiConfig: List[RootApiConfig] = {
     List(
-      postFileUploadExampleApi,
-      postFileUploadErrorExampleApi
+      postFileUploadExampleApi
     )
   }
 

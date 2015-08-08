@@ -99,22 +99,12 @@ class SimpleRestTestApi extends RegistrableMock {
     displayUrl = "/" + rootApiPath + "/examples/simplerest/delete"
   )
 
-  private val simpleRestInternalError = SimpleRestErrorConfig(
-    httpMethod = GET,
-    apiPath = rootApiPath / "examples" / "simplerest" / "error" / "500",
-    errorCode = InternalServerError,
-    errorMessage = "Example of 500 Internal Server Error from RestMagic",
-    displayName = "Simple Rest Error example",
-    displayUrl = "/" + rootApiPath + "/examples/simplerest/error/500"
-  )
-
   def getApiConfig: List[RootApiConfig] = {
     List(
       helloWorldHtmlApi,
       helloWorldJsonApi,
       helloWorldXmlApi,
       helloWorldFileApi,
-      simpleRestInternalError,
       postExampleApi,
       putExampleApi,
       deleteExampleApi

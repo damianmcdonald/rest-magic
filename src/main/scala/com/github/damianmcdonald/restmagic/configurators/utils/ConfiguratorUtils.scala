@@ -16,7 +16,7 @@
 
 package com.github.damianmcdonald.restmagic.configurators.utils
 
-import java.io.File
+import java.io.{ FileNotFoundException, File }
 import java.nio.file.{ Paths, Path }
 
 import com.github.damianmcdonald.restmagic.configurators.DataMode.DataModeType
@@ -37,7 +37,7 @@ trait ConfiguratorUtils extends SLF4JLogging {
   val ERROR_MULTI_MODE = "Singular serve mode can only be used when the responseData Map contains a single entry. Please use Random or ByParam serve modes"
   val ERROR_EMPTY_MAP = "The responseData map can not be empty. You must provide at least one response entry"
   val ERROR_SINGULAR_MODE = "The selected serve mode can only be used when the responseData Map contains more than one entry. Please add additional responses to the Map or use Singular serve mode"
-  val ERROR_EMPTY_STRING = "responseData can not be empty. You must provide a response entry"
+  def ERROR_EMPTY_STRING(field: String): String = { s"$field can not be empty. You must provide a $field entry" }
   val ERROR_EMPTY_FILE_PARAM_NAME = "The fileParamName can not be empty. This value is used identify the file part of a multi part form submission. You must provide a fileParamName"
   val ERROR_FILE_DOWNLOAD_NOT_EXISTS = "The provided filePath can not be resolved to a valid file."
   val ERROR_EMPTY_CREDENTIALS = "The credentials map can not be empty. You must provide at least one user -> password entry"
@@ -86,6 +86,7 @@ trait ConfiguratorUtils extends SLF4JLogging {
   protected def fileExists(fileName: String): Boolean = {
     if (Configuration.downloadsDir.isEmpty) {
       val resourceUrl = this.getClass().getResource("/downloads" + fileName)
+      if (resourceUrl == null) throw new FileNotFoundException("File: " + fileName + " not found")
       val resourcePath: Path = Paths.get(resourceUrl.toURI());
       resourcePath.toFile.exists()
     } else {
@@ -96,6 +97,7 @@ trait ConfiguratorUtils extends SLF4JLogging {
   protected def fileNameToFile(fileName: String): File = {
     if (Configuration.downloadsDir.isEmpty) {
       val resourceUrl = this.getClass().getResource("/downloads" + fileName)
+      if (resourceUrl == null) throw new FileNotFoundException("File: " + fileName + " not found")
       val resourcePath: Path = Paths.get(resourceUrl.toURI());
       resourcePath.toFile
     } else {

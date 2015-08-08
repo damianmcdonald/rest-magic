@@ -12,7 +12,7 @@ class ParameterizedHttpErrorByFormDataServiceSpec extends Specification with Spe
 
   private val rootApiPath = "restmagic"
 
-  "The ParameterizedHttpErrorService created viaParameterizedHttpErrorByFormDataTestApi" should {
+  "The ParameterizedHttpErrorService created via ParameterizedHttpErrorByFormDataTestApi" should {
     "return a 400 Bad Request Error for a POST request to path /" + rootApiPath + "/examples/parameterizedhttp/error/formdata/post" in {
       val data = Map("errorId" -> "2")
       Post("/" + rootApiPath + "/examples/parameterizedhttp/error/formdata/post", FormData(data)) ~> routes ~> check {

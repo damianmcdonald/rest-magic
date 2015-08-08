@@ -17,15 +17,9 @@
 package com.github.damianmcdonald.restmagic.configurators
 
 import com.github.damianmcdonald.restmagic.configurators.DataMode.DataModeType
-import com.github.damianmcdonald.restmagic.configurators.ParameterizedRestConfig._
 import com.github.damianmcdonald.restmagic.configurators.utils.ConfiguratorUtils
-import com.github.damianmcdonald.restmagic.exceptions.MethodNotSupportedException
-import spray.http.MediaType
-import spray.http.Uri.Path
-import spray.routing.Directives
-import spray.http.HttpMethods
+import spray.http.{ HttpMethod, MediaType }
 import spray.routing.{ Directive0, PathMatcher0 }
-import spray.http.HttpMethod
 
 object SimpleRestConfig extends ConfiguratorUtils {
   def apply(
@@ -35,7 +29,7 @@ object SimpleRestConfig extends ConfiguratorUtils {
     dataMode: DataModeType,
     responseData: String
   ): SimpleRestConfig = {
-    assert(!responseData.isEmpty, ERROR_EMPTY_STRING)
+    assert(!responseData.isEmpty, ERROR_EMPTY_STRING("responseData"))
     val validatedResponse = validateAndLoadResponses(dataMode, produces, responseData)
     val directive = httpMethodToDirective(httpMethod)
     new SimpleRestConfig(directive, apiPath, produces, dataMode, validatedResponse)
@@ -49,7 +43,7 @@ object SimpleRestConfig extends ConfiguratorUtils {
     responseData: String,
     validate: Boolean
   ): SimpleRestConfig = {
-    assert(!responseData.isEmpty, ERROR_EMPTY_STRING)
+    assert(!responseData.isEmpty, ERROR_EMPTY_STRING("responseData"))
     val validatedResponse = if (validate) validateAndLoadResponses(dataMode, produces, responseData) else loadResponses(dataMode, responseData)
     val directive = httpMethodToDirective(httpMethod)
     new SimpleRestConfig(directive, apiPath, produces, dataMode, validatedResponse)
@@ -65,7 +59,7 @@ object SimpleRestConfig extends ConfiguratorUtils {
     displayName: String,
     displayUrl: String
   ): SimpleRestConfig = {
-    assert(!responseData.isEmpty, ERROR_EMPTY_STRING)
+    assert(!responseData.isEmpty, ERROR_EMPTY_STRING("responseData"))
     val validatedResponse = if (validate) validateAndLoadResponses(dataMode, produces, responseData) else loadResponses(dataMode, responseData)
     val directive = httpMethodToDirective(httpMethod)
     val registeredApi = {

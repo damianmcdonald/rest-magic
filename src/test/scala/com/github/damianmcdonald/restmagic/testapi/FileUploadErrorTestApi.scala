@@ -15,18 +15,6 @@ class FileUploadErrorTestApi extends RegistrableMock {
 
   private val rootApiPath = "restmagic"
 
-  private val postFileUploadExampleApi = FileUploadConfig(
-    httpMethod = POST,
-    apiPath = rootApiPath / "examples" / "fileupload" / "post",
-    produces = `application/json`,
-    dataMode = Inline(),
-    responseData = """{ "status": "success" }""",
-    fileParamName = "myfile",
-    validate = true,
-    displayName = "File Upload Post example",
-    displayUrl = "/" + rootApiPath + "/examples/fileupload/post"
-  )
-
   private val postFileUploadErrorExampleApi = FileUploadErrorConfig(
     httpMethod = POST,
     apiPath = rootApiPath / "examples" / "fileupload" / "error" / "post",
@@ -39,7 +27,6 @@ class FileUploadErrorTestApi extends RegistrableMock {
 
   def getApiConfig: List[RootApiConfig] = {
     List(
-      postFileUploadExampleApi,
       postFileUploadErrorExampleApi
     )
   }

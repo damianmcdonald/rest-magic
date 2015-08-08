@@ -25,7 +25,7 @@ import com.github.damianmcdonald.restmagic.services._
 import spray.http.StatusCodes
 import spray.routing.{ Directives, _ }
 import java.lang.reflect.Method
-import com.github.damianmcdonald.restmagic.system.RegistrableMock
+import com.github.damianmcdonald.restmagic.system.{ Configuration, RegistrableMock }
 
 trait AbstractSystem {
   implicit def system: ActorSystem
@@ -123,7 +123,7 @@ trait RestMagicApi extends RouteConcatenation with StaticRoute with AbstractSyst
       case api if api.httpMethod.equalsIgnoreCase("Delete") => "Delete"
       case _ => throw new MatchError("Unable to find match for httpMethod!!!!!")
     }
-    concatRoutes(services) ~ new ApiDirectoryService(apis).route ~ staticRoute
+    concatRoutes(services) ~ new ApiRegistryService(apis).route ~ staticRoute
   }
 }
 
@@ -131,11 +131,14 @@ trait StaticRoute extends Directives {
   this: AbstractSystem =>
 
   lazy val staticRoute =
-    pathPrefix("/assets") {
-      getFromResourceDirectory("web/assets")
+    pathPrefix("restmagic" / "registry") {
+      getFromResourceDirectory("registry")
     } ~
+      pathPrefix(Configuration.staticPathName) {
+        getFromResourceDirectory("static")
+      } ~
       pathEndOrSingleSlash {
-        getFromResource("web/index.html")
+        getFromResource("static/" + Configuration.staticIndex)
       } ~
       complete(StatusCodes.NotFound)
 }

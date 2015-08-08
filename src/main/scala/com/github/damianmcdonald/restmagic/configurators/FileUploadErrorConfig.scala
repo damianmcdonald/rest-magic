@@ -1,5 +1,6 @@
 package com.github.damianmcdonald.restmagic.configurators
 
+import com.github.damianmcdonald.restmagic.configurators.FileUploadConfig._
 import spray.routing.{ Directive0, PathMatcher0 }
 import spray.http.StatusCode
 import com.github.damianmcdonald.restmagic.configurators.utils.ConfiguratorUtils
@@ -14,6 +15,7 @@ object FileUploadErrorConfig extends ConfiguratorUtils {
     errorMessage: String,
     fileParamName: String
   ): FileUploadErrorConfig = {
+    assert(!fileParamName.isEmpty, ERROR_EMPTY_FILE_PARAM_NAME)
     val directive = httpMethodToDirective(httpMethod)
     new FileUploadErrorConfig(directive, apiPath, errorCode, errorMessage, fileParamName)
   }
@@ -27,6 +29,7 @@ object FileUploadErrorConfig extends ConfiguratorUtils {
     displayName: String,
     displayUrl: String
   ): FileUploadErrorConfig = {
+    assert(!fileParamName.isEmpty, ERROR_EMPTY_FILE_PARAM_NAME)
     val directive = httpMethodToDirective(httpMethod)
     val registeredApi = {
       Option(

@@ -43,6 +43,10 @@ object Configuration extends Directives {
 
   lazy val port = config.getString("restmagic.port").toInt
 
+  lazy val staticPathName = config.getString("restmagic.static.path.name")
+
+  lazy val staticIndex = config.getString("restmagic.static.index")
+
   lazy val stubsDir = {
     if (config.getString("restmagic.stubs.root").isEmpty) {
       ""
@@ -51,22 +55,6 @@ object Configuration extends Directives {
       if (file.exists()) file.getAbsolutePath else ""
     }
   }
-
-  /*
-  lazy val uploadsDir = {
-    if (config.getString("restmagic.upload.root").isEmpty) {
-      if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX) {
-        if (new File("/tmp").exists()) "/tmp"
-        else "/var/tmp"
-      } else if (SystemUtils.IS_OS_WINDOWS) {
-        scala.util.Properties.envOrElse("TEMP", "C:/temp")
-      }
-    } else {
-      val file = new File(config.getString("restmagic.upload.root"))
-      if (file.exists()) file.getAbsolutePath else ""
-    }
-  }
-  */
 
   lazy val uploadsDir = {
     if (config.getString("restmagic.upload.root").isEmpty) {

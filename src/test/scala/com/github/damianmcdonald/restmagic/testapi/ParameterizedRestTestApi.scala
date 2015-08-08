@@ -153,36 +153,6 @@ class ParameterizedRestTestApi extends RegistrableMock with ConfiguratorUtils {
     displayUrl = "/" + rootApiPath + "/examples/parameterizedrest/delete/{{paramId}}"
   )
 
-  private val errorWithGetByParamApi = ParameterizedRestErrorConfig(
-    httpMethod = GET,
-    apiPath = rootApiPath / "examples" / "parameterizedrest" / "error" / MATCH_PARAM,
-    responseData = Map(
-      "1" -> ErrorCode(BadRequest, "RestMagic BadRequest error"),
-      "2" -> ErrorCode(BandwidthLimitExceeded, "RestMagic BandwidthLimitExceeded error"),
-      "3" -> ErrorCode(GatewayTimeout, "RestMagic GatewayTimeout error"),
-      "4" -> ErrorCode(NetworkConnectTimeout, "RestMagic NetworkConnectTimeout error"),
-      "5" -> ErrorCode(RequestUriTooLong, "RestMagic RequestUriTooLong error")
-    ),
-    serveMode = ByParam(),
-    displayName = "Parameterized Rest Error by param",
-    displayUrl = "/" + rootApiPath + "/examples/parameterizedrest/error/{{errorId}}"
-  )
-
-  private val errorWithPostByParamApi = ParameterizedRestErrorConfig(
-    httpMethod = POST,
-    apiPath = rootApiPath / "examples" / "parameterizedrest" / "error" / MATCH_ANY,
-    responseData = Map(
-      "1" -> ErrorCode(BadRequest, "RestMagic BadRequest error"),
-      "2" -> ErrorCode(BandwidthLimitExceeded, "RestMagic BandwidthLimitExceeded error"),
-      "3" -> ErrorCode(GatewayTimeout, "RestMagic GatewayTimeout error"),
-      "4" -> ErrorCode(NetworkConnectTimeout, "RestMagic NetworkConnectTimeout error"),
-      "5" -> ErrorCode(RequestUriTooLong, "RestMagic RequestUriTooLong error")
-    ),
-    serveMode = Random(),
-    displayName = "Parameterized Rest Error by param",
-    displayUrl = "/" + rootApiPath + "/examples/parameterizedrest/error/**"
-  )
-
   def getApiConfig: List[RootApiConfig] = {
     List(
       helloWorldJsonByParamApi,
@@ -192,9 +162,7 @@ class ParameterizedRestTestApi extends RegistrableMock with ConfiguratorUtils {
       matchAnyPathByParamApi,
       postByParamApi,
       putByParamApi,
-      deleteByParamApi,
-      errorWithGetByParamApi,
-      errorWithPostByParamApi
+      deleteByParamApi
     )
   }
 
