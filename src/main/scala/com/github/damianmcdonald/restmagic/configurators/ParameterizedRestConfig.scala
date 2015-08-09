@@ -83,7 +83,7 @@ object ParameterizedRestConfig extends ConfiguratorUtils {
           produces.toString,
           dataModeTypeToString(DataMode.Inline()),
           serveModeTypeToString(ServeMode.Singular()),
-          responseData,
+          validatedMap,
           API_TYPE_PARAMETERIZED_REST
         )
       )

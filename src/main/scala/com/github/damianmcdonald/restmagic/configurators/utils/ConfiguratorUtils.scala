@@ -17,6 +17,7 @@
 package com.github.damianmcdonald.restmagic.configurators.utils
 
 import java.io.{ FileNotFoundException, File }
+import java.nio.charset.StandardCharsets
 import java.nio.file.{ Paths, Path }
 
 import com.github.damianmcdonald.restmagic.configurators.DataMode.DataModeType
@@ -115,7 +116,15 @@ trait ConfiguratorUtils extends SLF4JLogging {
   private def fileToString(fileName: String): String = {
     if (Configuration.stubsDir.isEmpty) {
       val is = this.getClass().getResourceAsStream("/stubs" + fileName)
-      scala.io.Source.fromInputStream(is).mkString
+      try {
+        scala.io.Source.fromInputStream(is, "UTF-8").mkString
+      } catch {
+        case e: Exception => {
+          e.printStackTrace()
+          log.error("A problem has occured attempting to read file: " + fileName)
+          e.getMessage
+        }
+      }
     } else {
       scala.io.Source.fromFile(Configuration.stubsDir + fileName).mkString
     }

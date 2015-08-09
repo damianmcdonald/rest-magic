@@ -18,7 +18,6 @@ package com.github.damianmcdonald.restmagic.api
 
 import akka.actor.{ ActorSystem, Props }
 import akka.event.slf4j.SLF4JLogging
-import com.github.damianmcdonald.restmagic.MyMockApi
 import com.github.damianmcdonald.restmagic.configurators.FormMode.{ ByFormData, ByQueryString }
 import com.github.damianmcdonald.restmagic.configurators._
 import com.github.damianmcdonald.restmagic.services._
@@ -36,10 +35,24 @@ trait RestMagicApi extends RouteConcatenation with StaticRoute with AbstractSyst
   private def getRegistrableMocks: List[RootApiConfig] = {
     import org.reflections.Reflections
     import scala.collection.JavaConversions._
-    val reflections = new Reflections("com.github.damianmcdonald.restmagic")
-    val subclasses = reflections.getSubTypesOf(classOf[RegistrableMock])
-    val registrables: List[RegistrableMock] = subclasses.toList.map { x => x.getDeclaredConstructors()(0).newInstance().asInstanceOf[RegistrableMock] }
-    registrables.map(e => e.getApiConfig).flatten
+
+    def getMocks(packageName: String): List[RootApiConfig] = {
+      val reflections = new Reflections(packageName)
+      val subclasses = reflections.getSubTypesOf(classOf[RegistrableMock])
+      val registrables: List[RegistrableMock] = subclasses.toList.map { x => x.getDeclaredConstructors()(0).newInstance().asInstanceOf[RegistrableMock] }
+      registrables.map(e => e.getApiConfig).flatten
+    }
+
+    val packagesToScan = {
+      if (!Configuration.mockApiPackage.equals("com.github.damianmcdonald.restmagic")) {
+        List("com.github.damianmcdonald.restmagic", Configuration.mockApiPackage)
+      } else {
+        List("com.github.damianmcdonald.restmagic")
+      }
+    }
+
+    packagesToScan.map(e => getMocks(e)).flatten
+
   }
 
   private def configToService(xs: List[RootApiConfig]): List[(RootMockService, Option[RegisteredApi])] = {
@@ -134,6 +147,9 @@ trait StaticRoute extends Directives {
     pathPrefix("restmagic" / "registry") {
       getFromResourceDirectory("registry")
     } ~
+      pathPrefix("assets") {
+        getFromResourceDirectory("static/assets")
+      } ~
       pathPrefix(Configuration.staticPathName) {
         getFromResourceDirectory("static")
       } ~

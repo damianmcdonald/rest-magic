@@ -47,6 +47,12 @@ object Configuration extends Directives {
 
   lazy val staticIndex = config.getString("restmagic.static.index")
 
+  lazy val staticScriptsDir = config.getString("restmagic.static.scripts")
+
+  lazy val staticStyleSheetsDir = config.getString("restmagic.static.stylesheets")
+
+  lazy val staticImagesDir = config.getString("restmagic.static.images")
+
   lazy val stubsDir = {
     if (config.getString("restmagic.stubs.root").isEmpty) {
       ""
@@ -71,6 +77,14 @@ object Configuration extends Directives {
     } else {
       val file = new File(config.getString("restmagic.downloads.root"))
       if (file.exists()) file.getAbsolutePath else ""
+    }
+  }
+
+  lazy val mockApiPackage = {
+    if (config.getString("restmagic.mockapi.package").isEmpty) {
+      "com.github.damianmcdonald.restmagic"
+    } else {
+      config.getString("restmagic.mockapi.package")
     }
   }
 

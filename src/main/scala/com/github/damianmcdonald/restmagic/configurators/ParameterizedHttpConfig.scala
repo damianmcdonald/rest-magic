@@ -91,7 +91,7 @@ object ParameterizedHttpConfig extends ConfiguratorUtils {
           produces.toString,
           dataModeTypeToString(DataMode.Inline()),
           serveModeTypeToString(ServeMode.Singular()),
-          responseData,
+          validatedMap,
           if (formMode.isInstanceOf[ByQueryString]) API_TYPE_PARAMETERIZED_HTTP_BY_QUERY_STRING else API_TYPE_PARAMETERIZED_HTTP_BY_FORM_DATA,
           Option(paramName)
         )
