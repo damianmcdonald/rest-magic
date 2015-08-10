@@ -2,8 +2,111 @@
 
 image:https://travis-ci.org/damianmcdonald/rest-magic.svg?branch=master["Build Status", link="https://travis-ci.org/damianmcdonald/rest-magic"] image:https://go-shields.herokuapp.com/license-apache2-blue.png["License Apache2", link="http://www.apache.org/licenses/LICENSE-2.0"]
 
-Under construction
- 
+`rest-magic` is an abstraction layer that sits above the Spray/AKKA frameworks and provides developers with the ability to declaritively create RESTful web service mocks.
+
+The intended audience are front-end developers who require real back-end responses in order to progress their development but whom do not require a full-blown back-end implementation.
+
+`rest-magic` comes bundled with several pre-configured HTTP services that should cover most development needs.
+
+[cols="1,3a", options="header"]
+|===
+|Config Type |Service Provided 
+
+|Simple REST
+|`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice
+
+|Parameterized REST
+|`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice/{{parameter}}
+
+|Parameterized Http
+|
+`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice?parameter=value
+
+`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice (`parameter=value` as `FormData`)
+
+|Binary Upload
+|
+`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice 
+
+(`MultiPartFormData` containing binary data)
+
+|Binary Download
+|`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice
+
+|Basic Http Authenticaton/Authorization
+|
+`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice 
+
+payload =`{ username: myUsername, password: myPassword }`
+
+header = `{ Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ== }`
+
+|===
+
+_Note_: Each Config Type has a corresponding error type allowing developers to call web services that generate errors. Useful when testing the exception handling behaviour of an application.
+
+== Declarative Services
+
+So let's dive straight into an example demonstrating how RESTful web services are created with `rest-magic`.
+
+=== Hello World (Simple Rest)
+
+No documentaton is complete without the classic "`Hello World`" example. Therefore, let's take a look at how we would implment a RESTful web service that returns _Hello World_ as a response.
+
+[source,scala]
+----
+private val helloWorldApi = SimpleRestConfig(
+  httpMethod = GET,
+  apiPath = "restmagic" / "helloworld",
+  produces = `application/json`,
+  dataMode = Inline(),
+  responseData = """{ "response": "Hello World" }"""
+)
+----
+
+The example above demonstrates the declaritive nature of `rest-magic`, allowing a developer to define a RESTful web service without concern relating to the internal implementation details.
+
+This example creates an endpoint at; http://localhost:8085/restmagic/helloworld
+
+It responds with the MIME type `application/json` and a value of `{ "response": "Hello World" }`
+
+=== Hello World (Parameterized Rest)
+
+Taking the concept of a simple RESTful web service a step further, is the `ParameterizedRestConfig`.
+
+[source,scala]
+----
+private val helloWorldJsonByParamApi = ParameterizedRestConfig(
+  httpMethod = GET,
+  apiPath = "restmagic" / "helloworld" / MATCH_PARAM,
+  produces = `application/json`,
+  dataMode = Inline(),
+  responseData = Map(
+    "english" -> """{ "response": "Hello World" }""",
+    "turkish" -> """{ "response": "Merhaba Dunya" }""",
+    "italian" -> """{ "response": "Salve Mondo" }""",
+    "spanish" -> """{ "response": "Hola Mundo" }""",
+    "german" -> """{ "response": "Halo Welt" }"""
+  ),
+  serveMode = ByParam()
+)
+----
+
+This example creates an endpoint at; http://localhost:8085/restmagic/helloworld/{{parameter}}
+
+The {{parameter}} part of the URL is captured and then used to retrieve the correct response from the `responseData` map.
+
+The service responds with the MIME type `application/json` and the value that matches the provided parameter.
+
+The concrete example; http://localhost:8085/restmagic/helloworld/spanish, would respond with the MIME type `application/json` and the value `{ "response": "Hola Mundo" }`.
+
+== Next steps
+
+Now that you have a feel for what `rest-magic` does, the next step would be to dive into the //TODO: DOCUMENTATION_LINK to learn how to get started.
+
+If you are still not convinced about what `rest-magic` can do for you, you can take a look at https://github.com/damianmcdonald/action-figure-magic[action-figure-magic]. 
+
+This is a _dog food_ application that uses `rest-magic` to create a fictitous web site and will give you a better feel for how `rest-magic` could be used in the wild.
 
 
 

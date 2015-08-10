@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+/*
 import de.heikoseeberger.sbtheader.HeaderPattern
 import de.heikoseeberger.sbtheader.license.Apache2_0
 
 lazy val restmagic = project.in(file(".")).enablePlugins(AutomateHeaderPlugin)
+*/
 
 name := "rest-magic"
 
@@ -66,9 +68,11 @@ libraryDependencies ++= {
   )
 }
 
+/*
 headers := Map(
   "scala" -> Apache2_0("2015", "Damian McDonald")
 )
+*/
 
 Revolver.settings
 

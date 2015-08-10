@@ -17,76 +17,140 @@
 package com.github.damianmcdonald.restmagic
 
 import com.github.damianmcdonald.restmagic.configurators.DataMode._
+import com.github.damianmcdonald.restmagic.configurators.ServeMode._
 import com.github.damianmcdonald.restmagic.configurators._
 import com.github.damianmcdonald.restmagic.system.RegistrableMock
+import com.github.damianmcdonald.restmagic.configurators.FormMode.{ ByFormData, ByQueryString }
 import spray.http.HttpMethods._
 import spray.http.MediaTypes._
 import spray.routing.Directives._
+import spray.http.StatusCodes._
+import com.github.damianmcdonald.restmagic.configurators.utils.ConfiguratorUtils
 
-class MyMockApi extends RegistrableMock {
+/**
+ * To get started creating mocked web services,
+ * you need to create a class that mixes in the traits:
+ *
+ * 1) com.github.damianmcdonald.restmagic.system.RegistrableMock
+ * 2) com.github.damianmcdonald.restmagic.configurators.utils.ConfiguratorUtils
+ *
+ * rest-magic will search the package com.github.damianmcdonald.restmagic
+ * for any classes mixing in the RegistrableMock trait and will create web services
+ * for the definitions contained within those classes.
+ *
+ * Optionally, if you have defined an alternate package via the mockapi.package
+ * property of /src/main/resouces/application.conf, then that package will also
+ * be searched for any classes mixing in the RegistrableMock trait and will create
+ * web services for the definitions contained within those classes.
+ *
+ * All the web services defined in this class will appear in the rest-magic
+ * api registry that can be accessed at:
+ *
+ * protocol://hostname:port/restmagic/registry/registry.html
+ */
+class MyMockApi extends RegistrableMock with ConfiguratorUtils {
 
-  private val welcomeJsonApi = SimpleRestConfig(
+  /**
+   * Creates a simple rest api service that:
+   *
+   * GET http verb on endpoint; protocol://hostname:port/restmagic/welcome
+   * Responds with the MIME type; text/html and with a value of <h1>Hello World</h1>
+   */
+  private val simpleRestApi = SimpleRestConfig(
     httpMethod = GET,
     apiPath = "restmagic" / "welcome",
     produces = `text/html`,
     dataMode = Inline(),
     responseData = """<h1>Hello World</h1>""",
     validate = true,
-    displayName = "Welcome Api",
+    displayName = "Simple Rest Api",
     displayUrl = "/restmagic/welcome"
   )
 
-  private val helloWorldJsonApi = SimpleRestConfig(
+  /**
+   * Creates a parameterized rest api service that:
+   *
+   * GET http verb on endpoint; protocol://hostname:port/restmagic/welcome/{{parameter}}
+   * Responds with the MIME type; application/json and with the value that corresponds to parameter == responseData.key
+   *
+   * A concrete example of using this service is:
+   *
+   * GET request to http://localhost:8085/restmagic/welcome/spanish
+   * Responds with application/json value { "response": "Hola Mundo" }
+   */
+  private val parameterizedRestApi = ParameterizedRestConfig(
     httpMethod = GET,
-    apiPath = "restmagic" / "hello",
+    apiPath = "restmagic" / "welcome" / MATCH_PARAM,
     produces = `application/json`,
     dataMode = Inline(),
-    responseData = """{ "response": "Merhaba Dunya" }""",
+    responseData = Map(
+      "english" -> """{ "response": "Hello World" }""",
+      "turkish" -> """{ "response": "Merhaba Dunya" }""",
+      "italian" -> """{ "response": "Salve Mondo" }""",
+      "spanish" -> """{ "response": "Hola Mundo" }""",
+      "german" -> """{ "response": "Halo Welt" }"""
+    ),
+    serveMode = ByParam(),
     validate = true,
-    displayName = "Hello World Api",
-    displayUrl = "/restmagic/hello"
+    displayName = "Parameterized Api with language parameter",
+    displayUrl = "/restmagic/welcome/{{parameter}}"
   )
 
-  private val postHelloWorldJsonApi = SimpleRestConfig(
-    httpMethod = POST,
-    apiPath = "restmagic" / "hello" / "post",
+  /**
+   * Creates a parameterized http by query string api service that:
+   *
+   * GET http verb on endpoint; protocol://hostname:port/restmagic/character?characterId={{characterId}}
+   * Responds with the MIME type; application/json and with the value that corresponds to characterId == responseData.key
+   *
+   * A concrete example of using this service is:
+   *
+   * GET request to http://localhost:8085/restmagic/character?characterId=3
+   * Responds with application/json value { "character": "Yoda" }
+   */
+  private val parameterizedHttpByQueryStringApi = ParameterizedHttpConfig(
+    httpMethod = GET,
+    apiPath = "restmagic" / "character",
     produces = `application/json`,
     dataMode = Inline(),
-    responseData = """{ "response": "Merhaba Dunya" }""",
+    responseData = Map(
+      "1" -> """{ "character": "Luke Skywalker" }""",
+      "2" -> """{ "character": "Darth Vader" }""",
+      "3" -> """{ "character": "Yoda" }""",
+      "4" -> """{ "character": "Han Solo" }""",
+      "5" -> """{ "character": "Chewbacca" }"""
+    ),
+    paramName = "characterId",
+    serveMode = ByParam(),
+    formMode = ByQueryString(),
     validate = true,
-    displayName = "Hello World Api Post",
-    displayUrl = "/restmagic/hello/post"
+    displayName = "Parameterized Http with characterId parameter",
+    displayUrl = "/restmagic/character?characterId={{characterId}}"
   )
 
-  private val putHelloWorldJsonApi = SimpleRestConfig(
-    httpMethod = PUT,
-    apiPath = "restmagic" / "hello" / "put",
-    produces = `application/json`,
-    dataMode = Inline(),
-    responseData = """{ "response": "Merhaba Dunya" }""",
-    validate = true,
-    displayName = "Hello World Api Put",
-    displayUrl = "/restmagic/hello/put"
-  )
-
-  private val deleteHelloWorldJsonApi = SimpleRestConfig(
-    httpMethod = DELETE,
-    apiPath = "restmagic" / "hello" / "delete",
-    produces = `application/json`,
-    dataMode = Inline(),
-    responseData = """{ "response": "Merhaba Dunya" }""",
-    validate = true,
-    displayName = "Hello World Api Delete",
-    displayUrl = "/restmagic/hello/delete"
-  )
-
+  /**
+   * The RegistrableMock trait requires the implementation of getApiConfig.
+   * This method returns a List containing all of the api configurations
+   * to be transformed into web services.
+   */
   override def getApiConfig = {
     List(
-      welcomeJsonApi,
-      helloWorldJsonApi,
-      postHelloWorldJsonApi,
-      putHelloWorldJsonApi,
-      deleteHelloWorldJsonApi
+      simpleRestApi,
+      parameterizedRestApi,
+      parameterizedHttpByQueryStringApi
     )
   }
+
+  /**
+   * Next steps
+   *
+   * 1) Read the project documentation; //TODO INSERT DOCUMENTATION LINK
+   *
+   * 2) View the test cases in /src/test/scala/com/github/damianmcdonald/restmagic/testapi.
+   * 	These contain examples for creating each of the various config types available.
+   *
+   * 3) Take a look at the action-figure-magic project. This project is designed to demonstrate the use
+   * 	of rest-magic through the creation of a fictitious website;
+   *
+   *   	https://github.com/damianmcdonald/action-figure-magic
+   */
 }
