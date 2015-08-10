@@ -13,29 +13,48 @@ The intended audience are front-end developers who require real back-end respons
 |Config Type |Service Provided 
 
 |Simple REST
-|`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice
+|
+`GET`\|`POST`\|`PUT`\|`DELETE` 
+
+http://myapp/myservice
 
 |Parameterized REST
-|`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice/{{parameter}}
+|
+`GET`\|`POST`\|`PUT`\|`DELETE` 
+
+http://myapp/myservice/{{parameter}}
 
 |Parameterized Http
 |
-`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice?parameter=value
+`GET`\|`POST`\|`PUT`\|`DELETE` 
 
-`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice (`parameter=value` as `FormData`)
+http://myapp/myservice?parameter=value
+
+`GET`\|`POST`\|`PUT`\|`DELETE` 
+
+http://myapp/myservice 
+
+(`parameter=value` as `FormData`)
 
 |Binary Upload
 |
-`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice 
+`GET`\|`POST`\|`PUT`\|`DELETE` 
+
+http://myapp/myservice 
 
 (`MultiPartFormData` containing binary data)
 
 |Binary Download
-|`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice
+|
+`GET`\|`POST`\|`PUT`\|`DELETE` 
+
+http://myapp/myservice
 
 |Basic Http Authenticaton/Authorization
 |
-`GET`\|`POST`\|`PUT`\|`DELETE` http://myapp/myservice 
+`GET`\|`POST`\|`PUT`\|`DELETE` 
+
+http://myapp/myservice 
 
 payload =`{ username: myUsername, password: myPassword }`
 
