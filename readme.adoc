@@ -56,14 +56,22 @@ http://myapp/myservice
 
 http://myapp/myservice 
 
-payload =`{ 
-		username: myUsername, 
-		password: myPassword 
-	  }`
+.payload
+[source,json]
+----
+{ 
+  username: myUsername, 
+  password: myPassword 
+}
+----
 
-header = `{ 
-		Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ== 
-	  }`
+.header
+[source,json]
+----
+{ 
+  Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ== 
+}
+----
 |===
 
 _Note_: Each Config Type has a corresponding error type allowing developers to call web services that generate errors. Useful when testing the exception handling behaviour of an application.
