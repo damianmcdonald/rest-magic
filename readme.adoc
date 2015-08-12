@@ -133,7 +133,7 @@ The concrete example; http://localhost:8085/restmagic/helloworld/spanish, would 
 
 == Next steps
 
-Now that you have a feel for what `rest-magic` does, the next step would be to dive into the //TODO: DOCUMENTATION_LINK to learn how to get started.
+Now that you have a feel for what `rest-magic` does, the next step would be to dive into the https://github.com/damianmcdonald/rest-magic/wiki[project documentation] to learn more .
 
 If you are still not convinced about what `rest-magic` can do for you, you can take a look at https://github.com/damianmcdonald/action-figure-magic[action-figure-magic]. 
 

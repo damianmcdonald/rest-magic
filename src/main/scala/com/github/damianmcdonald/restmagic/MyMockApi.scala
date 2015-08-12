@@ -17,15 +17,14 @@
 package com.github.damianmcdonald.restmagic
 
 import com.github.damianmcdonald.restmagic.configurators.DataMode._
+import com.github.damianmcdonald.restmagic.configurators.FormMode.ByQueryString
 import com.github.damianmcdonald.restmagic.configurators.ServeMode._
 import com.github.damianmcdonald.restmagic.configurators._
+import com.github.damianmcdonald.restmagic.configurators.utils.ConfiguratorUtils
 import com.github.damianmcdonald.restmagic.system.RegistrableMock
-import com.github.damianmcdonald.restmagic.configurators.FormMode.{ ByFormData, ByQueryString }
 import spray.http.HttpMethods._
 import spray.http.MediaTypes._
 import spray.routing.Directives._
-import spray.http.StatusCodes._
-import com.github.damianmcdonald.restmagic.configurators.utils.ConfiguratorUtils
 
 /**
  * To get started creating mocked web services,

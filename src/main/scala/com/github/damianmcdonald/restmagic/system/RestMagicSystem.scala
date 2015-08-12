@@ -32,7 +32,6 @@ object RestMagicSystem extends App with RestMagicApi {
 
 object Configuration extends Directives {
   import com.typesafe.config.ConfigFactory
-  import org.apache.commons.lang3.SystemUtils
 
   // load configuration settings from application.conf
   private val config = ConfigFactory.load
