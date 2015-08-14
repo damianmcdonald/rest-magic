@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-/*
-import de.heikoseeberger.sbtheader.HeaderPattern
-import de.heikoseeberger.sbtheader.license.Apache2_0
-
-lazy val restmagic = project.in(file(".")).enablePlugins(AutomateHeaderPlugin)
-*/
-
 name := "rest-magic"
 
 version       := "1.0.0"
@@ -30,13 +23,13 @@ scalaVersion  := "2.11.6"
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
 resolvers ++= Seq(
-  "ivy releases"          at  "http://repo.typesafe.com/typesafe/ivy-releases/, [organization]/[module]/(scala_[scalaVersion]/)(sbt_[sbtVersion]/)[revision]/[type]s/[artifact](-[classifier]).[ext]",
-  "maven releases"        at  "http://repo1.maven.org/maven2/",
-  "scalasbt releases"     at  "http://scalasbt.artifactoryonline.com/scalasbt/repo/, [organization]/[module]/scala_[scalaVersion]/sbt_[sbtVersion]/[revision]/[type]s/[artifact].[ext]",
-  "bintray releases"      at  "http://dl.bintray.com/scalaz/releases/",
-  "sonatype releases"     at  "http://oss.sonatype.org/content/repositories/releases",
-  "typesafe releases"     at  "http://dl.bintray.com/typesafe/maven-releases/",
-  "scala sbt"             at  "http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases"
+  Resolver.url("ivy releases", url("http://repo.typesafe.com/typesafe/ivy-releases/"))(Resolver.ivyStylePatterns),
+  Resolver.url("maven releases", url("http://repo1.maven.org/maven2/")),
+  Resolver.url("scalasbt releases", url("http://scalasbt.artifactoryonline.com/scalasbt/repo/"))(Resolver.ivyStylePatterns),
+  Resolver.url("bintray releases", url("http://dl.bintray.com/scalaz/releases/")),
+  Resolver.url("sonatype releases", url("http://oss.sonatype.org/content/repositories/releases/")),
+  Resolver.url("typesafe releases", url("http://dl.bintray.com/typesafe/maven-releases/")),
+  Resolver.url("scala sbt", url("http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/"))
 )
 
 libraryDependencies ++= {
@@ -67,12 +60,6 @@ libraryDependencies ++= {
     "org.specs2"                  %%  "specs2"                  % "2.4.17" % "test"      // until spray-testkit gets compiled against specs 3.3
   )
 }
-
-/*
-headers := Map(
-  "scala" -> Apache2_0("2015", "Damian McDonald")
-)
-*/
 
 Revolver.settings
 

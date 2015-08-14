@@ -142,13 +142,13 @@ class MyMockApi extends RegistrableMock with ConfiguratorUtils {
   /**
    * Next steps
    *
-   * 1) Read the project documentation; //TODO INSERT DOCUMENTATION LINK
+   * 1) Read the project documentation; https://github.com/damianmcdonald/rest-magic/wiki.
    *
    * 2) View the test cases in /src/test/scala/com/github/damianmcdonald/restmagic/testapi.
-   * 	These contain examples for creating each of the various config types available.
+   * 	  These contain examples for creating each of the various config types available.
    *
    * 3) Take a look at the action-figure-magic project. This project is designed to demonstrate the use
-   * 	of rest-magic through the creation of a fictitious website;
+   * 	  of rest-magic through the creation of a fictitious website.
    *
    *   	https://github.com/damianmcdonald/action-figure-magic
    */
